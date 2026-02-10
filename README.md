@@ -37,7 +37,7 @@ git clone https://github.com/myrheimb/dotfiles.git ~/.dotfiles
 ```bash
 ln -sv ~/.dotfiles/.zshrc ~/
 ln -sv ~/.dotfiles/.hushlogin ~/
-ln -sv ~/.dotfiles/.direnvrc ~/.direnvrc
+ln -sv ~/.dotfiles/.direnvrc ~/
 ```
 
 Optional: Additional symlinks if you use the Zed editor.
