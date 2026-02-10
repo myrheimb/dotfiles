@@ -1,0 +1,10 @@
+# OS generated files
+.DS_Store*
+ehthumbs.db
+Thumbs.db
+
+# Nix related paths
+result
+
+# languageTool (handled by script)
+fasttext.176.bin

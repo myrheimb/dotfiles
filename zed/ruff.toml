@@ -1,0 +1,32 @@
+# ruff.toml
+
+# mimic Black’s 88 soft limit
+line-length = 89
+target-version = "py313"
+exclude = [".venv", ".devenv", ".direnv"]
+
+[format]
+docstring-code-format = true
+indent-style = "space"
+line-ending = "auto"
+
+[lint]
+extend-select = [
+  "E501", # line-too-long
+  "D",    # pydocstyle
+  "F",    # flake8
+  "I",    # isort
+  "T",    # typing
+]
+ignore = [
+  "D100", # Missing docstring in public module
+]
+
+[pydocstyle]
+convention = "google"
+
+[lint.isort]
+from-first = true
+force-single-line = true
+no-sections = true
+lines-between-types = 1

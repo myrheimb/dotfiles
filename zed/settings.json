@@ -1,0 +1,80 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+    "edit_predictions": {
+        "mode": "subtle",
+    },
+    "ui_font_size": 15.0,
+    "buffer_font_size": 13.0,
+    "agent": {
+        "enable_feedback": true,
+        "enabled": true,
+        "button": true,
+        "favorite_models": [],
+        "model_parameters": [],
+    },
+    "telemetry": {
+        "diagnostics": false,
+        "metrics": false,
+    },
+    "session": {
+        "trust_all_worktrees": true,
+    },
+    "use_on_type_format": true,
+    "show_whitespaces": "all",
+    "show_edit_predictions": true,
+    "wrap_guides": [88],
+    "icon_theme": "Zed (Default)",
+    "base_keymap": "VSCode",
+    "theme": {
+        "mode": "light",
+        "light": "One Light",
+        "dark": "One Dark",
+    },
+    "tab_size": 4,
+    "languages": {
+        "CSS": {
+            "format_on_save": "off",
+        },
+        "HTML": {
+            "format_on_save": "off",
+        },
+        "PHP": {
+            "format_on_save": "off",
+        },
+        "Python": {
+            "tab_size": 4,
+        },
+        "Go": {
+            "hard_tabs": true,
+        },
+        "Shell Script": {
+            "tab_size": 2,
+        },
+        "JSON": {
+            "tab_size": 2,
+        },
+        "Nix": {
+            "tab_size": 2,
+        },
+        "YAML": {
+            "tab_size": 2,
+        },
+    },
+    "lsp": {
+        "ruff": {
+            "initialization_options": {
+                "settings": {
+                    "configurationPreference": "filesystemFirst",
+                    "configuration": "~/.config/zed/ruff.toml",
+                },
+            },
+        },
+    },
+}
