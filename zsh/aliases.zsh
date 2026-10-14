@@ -1,6 +1,6 @@
 # Common aliases
 alias dev="cd $HOME/Development"
-alias l='ls -lah --color=auto'
+alias l='eza -lah'
 alias flushdns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
 alias nano='nano -c'
 alias 7z='7zz'
@@ -16,7 +16,8 @@ alias gcmaster='git checkout master'
 alias gca='git commit --amend'
 alias gri='git rebase -i HEAD~10'
 alias grs='git restore --staged'
-alias gsu='git stash -u'
+alias gsu='git stash push --include-untracked'
+alias gsku='git stash push --keep-index --include-untracked'
 alias gsp='git stash pop'
 alias gcb='git checkout -b'
 alias gb='git branch'
@@ -36,9 +37,12 @@ alias pwgens='securepass --exclude-ambiguous'
 alias pwgen='securepass --exclude-ambiguous --no-special'
 
 # List users on macOS
-alias listusers='dscl . list /Users | grep -v “^_”'
+alias listusers='dscl . list /Users | grep -v "^_"'
 
 # Nix
 alias nixrb="sudo darwin-rebuild switch --flake $HOME/.dotfiles/nix-configs"
 alias nixupdate="nix flake update --flake $HOME/.dotfiles/nix-configs"
 alias nixgc="nix-collect-garbage -d"
+
+# Translate
+alias trnsl="pbpaste | trans --brief"

@@ -1,0 +1,11 @@
+# Dependency set for the global system Python.
+# Resolved by uv (see uv.lock for exact versions) and built by uv2nix.
+# Bump with: uv lock --upgrade --directory nix-configs/python-env
+[project]
+name = "system-python"
+version = "0"
+requires-python = ">=3.14"
+dependencies = [
+  "boltons",
+  "pyyaml",
+]

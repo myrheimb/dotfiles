@@ -77,3 +77,16 @@ pushover() {
     --form-string "message=${message}" \
     https://api.pushover.net/1/messages.json
 }
+
+
+#######################################
+# Display a macOS notification banner.
+# Arguments:
+#   Message body (required).
+#   Title (optional; defaults to "Notification").
+#######################################
+notify() {
+  local -r message="$1"
+  local -r title="${2:-Notification}"
+  osascript -e "display notification \"${message}\" with title \"${title}\""
+}

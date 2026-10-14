@@ -1,10 +1,22 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 # https://nix-darwin.github.io/nix-darwin/manual/
 
+let
+  # LanguageTool only accepts 2-letter language labels, which rules out newer models like lid218e and GlotLID.
+  fasttextModel = pkgs.fetchurl {
+    url = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin";
+    hash = "sha256-fmnsVFG8JhzHhE5J5HkqhdfwnAZ4nsgA/EpErsNidk4=";
+  };
+  languageToolProperties = pkgs.writeText "server.properties" ''
+    fasttextModel=${fasttextModel}
+    fasttextBinary=${pkgs.fasttext}/bin/fasttext
+  '';
+in
 {
   imports = [
     ./apps.nix
+    ./home.nix
     ./nix-settings.nix
     ./python.nix
     ./python-binaries.nix
@@ -13,7 +25,7 @@
 
   # macOS services
   launchd.user.agents.languageToolServer = {
-    command = "/run/current-system/sw/bin/languagetool-server --config ${./..}/languageTool/server.properties --allow-origin '*'";
+    command = "${pkgs.languagetool}/bin/languagetool-server --config ${languageToolProperties} --allow-origin '*'";
     serviceConfig = {
       RunAtLoad = true;
       KeepAlive = true;
@@ -33,6 +45,10 @@
     applicationFirewall.enable = true;
     applicationFirewall.enableStealthMode = true;
   };
+
+  system.defaults.loginwindow.PowerOffDisabledWhileLoggedIn = false;
+  system.defaults.loginwindow.ShutDownDisabledWhileLoggedIn = false;
+  system.defaults.loginwindow.RestartDisabledWhileLoggedIn = false;
 
   system.defaults = {
     iCal."first day of week" = "Monday";

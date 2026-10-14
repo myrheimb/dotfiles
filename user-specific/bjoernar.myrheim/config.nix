@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   system.defaults.dock.persistent-apps = [
@@ -16,13 +16,24 @@
 
   environment.systemPackages = [
     pkgs.gnupg # GNU Privacy Guard
-    pkgs.pinentry_mac # Pinentry for GPG on macOS
     pkgs.trivy # Simple and comprehensive vulnerability scanner for containers
   ];
 
+  home-manager.users.${config.user.name}.services.gpg-agent = {
+    enable = true;
+    pinentry.package = pkgs.pinentry_mac;
+  };
+
   homebrew = {
+    brews = [
+    ];
+
     casks = [
+      "onedrive"
       "openvpn-connect"
     ];
+    masApps = {
+      # "AppName" = 12345;
+    };
   };
 }

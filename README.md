@@ -33,55 +33,41 @@ xcode-select --install
 git clone https://github.com/myrheimb/dotfiles.git ~/.dotfiles
 ```
 
-**2. Add symlinks to set things up**
-```bash
-ln -sv ~/.dotfiles/.zshrc ~/
-ln -sv ~/.dotfiles/.hushlogin ~/
-ln -sv ~/.dotfiles/.direnvrc ~/
+**2. Add your machine**
+
+Add an entry for your computer/host name to `darwinConfigurations` in `nix-configs/flake.nix`, and a matching `user-specific/<username>/` folder.
+```nix
+MyBook = mkDarwin { hostname = "MyBook"; name = "username"; };
 ```
 
-Optional: Additional symlinks if you use the Zed editor.
-```bash
-[[ -d ~/.config/zed ]] || mkdir -p ~/.config/zed
-ln -sv ~/.dotfiles/zed/settings.json ~/.config/zed/settings.json
-ln -sv ~/.dotfiles/zed/keymap.json ~/.config/zed/keymap.json
-ln -sv ~/.dotfiles/zed/ruff.toml ~/.config/zed/ruff.toml
-```
+**3. Rebuild the system (takes a few minutes the first time)**
 
-**3. Add your own username and desired computer/host name**
-```bash
-nano ~/.dotfiles/user-specific/identity.nix
-```
-
-**4. Rebuild the system (takes a few minutes the first time)**
-
-First time, use this command and replace `ComputerName` with the computer name you set in `identity.nix`.
+First time, use this command and replace `ComputerName` with the host name you added to `flake.nix`.
 ```bash
 sudo nix run nix-darwin --extra-experimental-features nix-command --extra-experimental-features flakes -- switch --flake ~/.dotfiles/nix-configs#ComputerName
 ```
+
+The rebuild links `.zshrc`, `.hushlogin` and the Zed and Claude Code configs from this repo into your home folder, see `nix-configs/home.nix`. Any file already in the way is renamed with a `.before-home-manager` suffix.
 
 For subsequent rebuilds, simply use the alias.
 ```bash
 nixrb
 ```
 
-## Optional: Personal Binary Cache
+## Managing the global Python
 
-If you run a [personal binary cache](https://nix.dev/tutorials/nixos/binary-cache-setup.html), store the settings in `/etc/nix/local.conf`.
+Dependencies for the system-wide `python3` live in `nix-configs/python-env/pyproject.toml`,
+pinned in `uv.lock` and built by [uv2nix](https://github.com/pyproject-nix/uv2nix).
+Don't add packages directly in `python.nix`.
 
-Bootstrap the file by running the command below.
-
+After editing `pyproject.toml`, re-resolve and rebuild.
 ```bash
-sudo tee /etc/nix/local.conf >/dev/null <<EOF
-extra-substituters = https://binary-cache.tld
-extra-trusted-public-keys = binary-cache.tld:PUBLIC_KEY_HERE
-extra-secret-key-files = /etc/nix/binary-cache.tld.priv
-EOF
+uv lock --directory ~/.dotfiles/nix-configs/python-env
+nixrb
 ```
 
-Make sure the private key is at the expected location.
-E.g.,
+A pre-commit hook in `.githooks/` rejects commits while `uv.lock` is out of date with `pyproject.toml`.
 
-```bash
-sudo cp ~/.ssh/binary-cache.tld.priv /etc/nix/binary-cache.tld.priv
-```
+Use `uv lock --upgrade` to bump versions, or `--upgrade-package NAME` for just one.
+
+Add a new dependency (unpinned) with `uv add --raw --no-sync --directory ~/.dotfiles/nix-configs/python-env NAME`.

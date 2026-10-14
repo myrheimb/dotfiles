@@ -1,0 +1,73 @@
+{
+  "attribution": false,
+  "autoMemoryEnabled": false,
+  "theme": "light",
+  "env": {
+    "GIT_CONFIG_COUNT": "2",
+    "GIT_CONFIG_KEY_0": "url.claude-may-not-push:.pushInsteadOf",
+    "GIT_CONFIG_KEY_1": "url.claude-may-not-push:.pushInsteadOf",
+    "GIT_CONFIG_VALUE_0": "git@",
+    "GIT_CONFIG_VALUE_1": "https://"
+  },
+  "permissions": {
+    "ask": [
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(git branch -D:*)",
+      "Bash(git checkout -- *)",
+      "Bash(git clean:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git restore:*)",
+      "Bash(git stash drop:*)",
+      "Bash(rm -rf:*)",
+      "mcp__claude_ai_ClickUp__clickup_delete_task",
+      "mcp__claude_ai_Slack__slack_schedule_message",
+      "mcp__claude_ai_Slack__slack_send_message"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Read(**/.env)",
+      "Read(~/.aws/**)",
+      "Read(~/.config/gh/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.netrc)",
+      "Read(~/.ssh/**)"
+    ]
+  },
+  "sandbox": {
+    "allowUnsandboxedCommands": false,
+    "enabled": true,
+    "failIfUnavailable": true,
+    "filesystem": {
+      "allowWrite": [
+        "~/.cache/nix",
+        "~/.cache/uv",
+        "~/Library/Caches/go-build",
+        "~/go"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "*.cachix.org",
+        "cache.nixos.org",
+        "files.pythonhosted.org",
+        "github.com",
+        "proxy.golang.org",
+        "pypi.org"
+      ],
+      "allowUnixSockets": ["/nix/var/nix/daemon-socket/socket"]
+    }
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "devenv_directory=\"$CLAUDE_PROJECT_DIR/.devenv\"; readlink \"$devenv_directory/profile\" | grep -q '^/nix/store/' || exit 0; echo \"export PATH=\\\"$devenv_directory/state/go/bin:$devenv_directory/state/venv/bin:$devenv_directory/profile/bin:\\$PATH\\\"\" >> \"$CLAUDE_ENV_FILE\""
+          }
+        ]
+      }
+    ]
+  }
+}
