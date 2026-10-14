@@ -1,11 +1,14 @@
 """Create/update the local SSH config file with server info fetched from Bitwarden."""
 
-from os import getenv
+from os import environ
 from pathlib import Path
-from subprocess import CompletedProcess
+from subprocess import PIPE
+from subprocess import CalledProcessError
+from subprocess import TimeoutExpired
 from subprocess import run
 
 import json
+import sys
 import typing as t
 
 SSH_FOLDER = Path(Path.home(), ".ssh")
@@ -13,166 +16,238 @@ SSH_CONFIG_FILE = Path(SSH_FOLDER, "config")
 
 BW_ITEM_PREFIX = "ssh-config-"
 
-# Ensure user is logged to Bitwarden CLI before proceeding.
-if not getenv("BW_SESSION"):
-    raise KeyError(
-        "BW_SESSION environment variable is not set. "
-        "Run 'bw login' or 'bw unlock' and export the BW_SESSION."
-    )
-
-VALID_SSH_OPTIONS = frozenset(
+SSH_PRIVATE_KEY_HEADERS = frozenset(
     {
-        "AddressFamily",
-        "BatchMode",
-        "Host",
-        "HostName",
-        "IdentityFile",
-        "Port",
-        "StrictHostKeyChecking",
-        "User",
+        "-----BEGIN DSA PRIVATE KEY-----",
+        "-----BEGIN EC PRIVATE KEY-----",
+        "-----BEGIN OPENSSH PRIVATE KEY-----",
+        "-----BEGIN RSA PRIVATE KEY-----",
     }
 )
 
-
-def run_cmd(cmd: t.Sequence) -> CompletedProcess:
-    """Reusable call of the subprocess run command."""
-    # check=True ensures any returncode other than 0 will raise an exception.
-    result = run(cmd, check=True, capture_output=True, text=True, timeout=10)
-    return result
-
-
-def bw_list_items() -> t.List[t.Dict[str, t.Any]]:
-    """Fetch all items in Bitwarden containing the BW_ITEM_PREFIX."""
-    cmd = ["bw", "list", "items", "--search", BW_ITEM_PREFIX]
-    result = run_cmd(cmd)
-    return json.loads(result.stdout)
+OPTIONAL_SSH_OPTIONS = (
+    "AddressFamily",
+    "BatchMode",
+    "IdentityFile",
+    "Port",
+    "StrictHostKeyChecking",
+    "User",
+)
 
 
-def bw_sync_vault() -> None:
-    """Sync the Bitwarden vault."""
-    cmd = ["bw", "sync"]
-    _result = run_cmd(cmd)
+def run_bw(*arguments: str) -> str:
+    """Run a Bitwarden CLI command and return its output."""
+    command = f"bw {' '.join(arguments)}"
+    try:
+        result = run(
+            ["bw", *arguments], check=True, capture_output=True, text=True, timeout=30
+        )
+    except CalledProcessError as error:
+        raise SystemExit(
+            f"'{command}' failed: {error.stderr.strip()}\nSSH config was not changed."
+        )
+    except TimeoutExpired:
+        raise SystemExit(f"'{command}' timed out.\nSSH config was not changed.")
+
+    return result.stdout
+
+
+def unlock_vault() -> None:
+    """Log in to or unlock Bitwarden if needed, keeping the session for this run."""
+    status = json.loads(run_bw("status"))["status"]
+    if status == "unlocked":
+        return
+
+    if status == "unauthenticated":
+        command = "login"
+        message = "Log in to Bitwarden to fetch your SSH hosts."
+    else:
+        command = "unlock"
+        message = "Bitwarden is locked. Enter your master password to unlock it."
+
+    # Flushed so it shows before bw's own prompt.
+    print(message, flush=True)  # noqa: T201
+    try:
+        # Only stdout is captured, so bw can still prompt for the master password.
+        result = run(["bw", command, "--raw"], check=True, stdout=PIPE, text=True)
+    except CalledProcessError:
+        raise SystemExit(f"'bw {command}' failed.\nSSH config was not changed.")
+
+    environ["BW_SESSION"] = result.stdout.strip()
+
+
+def is_private_ssh_key(path: Path) -> bool:
+    """Tell SSH private keys apart from other files by their first line."""
+    with path.open(errors="ignore") as key_file:
+        return key_file.readline().strip() in SSH_PRIVATE_KEY_HEADERS
 
 
 def list_private_ssh_keys() -> t.List[Path]:
-    """Return candidate private keys from ~/.ssh."""
-    excluded_names = {
-        "authorized_keys",
-        "config",
-        "known_hosts",
-    }
-    candidates = []
-    for key_path in sorted(SSH_FOLDER.iterdir()):
-        if not key_path.is_file():
-            continue
-        if key_path.name in excluded_names:
-            continue
-        if key_path.suffix in [".pub", ".txt", ".log", ".bak"]:
-            continue
-        if key_path.name.startswith("known_hosts"):
-            continue
-        if key_path.name.endswith("_bak"):
-            continue
-        candidates.append(key_path)
-    return candidates
+    """Return the private keys in ~/.ssh."""
+    return sorted(
+        path
+        for path in SSH_FOLDER.iterdir()
+        if path.is_file() and is_private_ssh_key(path)
+    )
 
 
-def select_default_ssh_key() -> Path:
+def read_default_ssh_key(config: str) -> t.Optional[Path]:
+    """Return the key of the 'Host *' section, which is always written first."""
+    for line in config.splitlines():
+        if line.strip().startswith("IdentityFile "):
+            return Path(line.split(maxsplit=1)[1])
+
+    return None
+
+
+def select_default_ssh_key(current_key: t.Optional[Path]) -> Path:
     """Prompt user to choose a default private key for the global SSH config section."""
     candidates = list_private_ssh_keys()
     if not candidates:
         raise SystemExit(f"No private SSH keys found in {SSH_FOLDER}.")
 
+    if len(candidates) == 1:
+        return candidates[0]
+
+    current_choice = (
+        str(candidates.index(current_key) + 1) if current_key in candidates else ""
+    )
+
     print("Select default SSH key for 'Host *':")  # noqa: T201
     for index, key_path in enumerate(candidates, start=1):
-        print(f"  {index}. {key_path}")  # noqa: T201
+        marker = " (current)" if str(index) == current_choice else ""
+        print(f"  {index}. {key_path}{marker}")  # noqa: T201
 
+    hint = f", Enter keeps {current_choice}" if current_choice else ""
     while True:
-        try:
-            choice = input(f"Enter choice [1-{len(candidates)}]: ").strip()
-        except KeyboardInterrupt:
-            raise SystemExit("\nAborted: SSH config was not changed.")
+        choice = (
+            input(f"Enter choice [1-{len(candidates)}{hint}]: ").strip()
+            or current_choice
+        )
+        if choice.isdigit() and 1 <= int(choice) <= len(candidates):
+            return candidates[int(choice) - 1]
 
-        if not choice.isdigit():
-            print("Invalid input. Enter a number.")  # noqa: T201
-            continue
-
-        selected_index = int(choice)
-        if 1 <= selected_index <= len(candidates):
-            return candidates[selected_index - 1]
-
-        print(f"Invalid choice. Enter a number between 1 and {len(candidates)}.")  # noqa: T201
+        print(f"Enter a number between 1 and {len(candidates)}.")  # noqa: T201
 
 
-def reset_ssh_config() -> None:
-    """Truncate the SSH config file and add a default entry."""
-    default_key_path = select_default_ssh_key()
-    with open(SSH_CONFIG_FILE, mode="w") as f:
-        f.writelines("Host *\n")
-        f.writelines("  AddKeysToAgent yes\n")
-        f.writelines(f"  IdentityFile {default_key_path}\n")
-        f.writelines("  StrictHostKeyChecking ask\n")
-        f.writelines("  IdentitiesOnly yes\n")
+def render_default_section(default_key_path: Path) -> str:
+    """Render the 'Host *' section that applies to every host."""
+    return "\n".join(
+        [
+            "Host *",
+            "  AddKeysToAgent yes",
+            f"  IdentityFile {default_key_path}",
+            "  StrictHostKeyChecking ask",
+            "  IdentitiesOnly yes",
+        ]
+    )
 
 
-def generate_config(host: t.Dict[str, t.Any]) -> None:
-    """Take a host dictionary and write it as an SSH config item."""
-    config_from_fields = {
+def render_host(item: t.Dict[str, t.Any]) -> t.Optional[str]:
+    """Render a Bitwarden item as an SSH config section, or None if it can't be."""
+    # Bitwarden leaves out the value of empty fields.
+    options = {
         field["name"]: field["value"]
-        for field in host["fields"]
-        if field["name"] in VALID_SSH_OPTIONS
+        for field in item.get("fields") or []
+        if field.get("value")
     }
-    identityfile = Path(SSH_FOLDER, str(config_from_fields["IdentityFile"]))
-    port = config_from_fields.get("Port", None)
-    user = config_from_fields.get("User", None)
-    addressfamily = config_from_fields.get("AddressFamily", None)
 
-    with open(SSH_CONFIG_FILE, mode="a") as f:
-        f.writelines("\n")
-        f.writelines(f"Host {config_from_fields['Host']}\n")
-        f.writelines(f"  HostName {config_from_fields['HostName']}\n")
+    if "Host" not in options or "HostName" not in options:
+        print(  # noqa: T201
+            f"Skipping '{item['name']}': it needs a Host and a HostName field.",
+            file=sys.stderr,
+        )
+        return None
 
-        if identityfile.stem != "None":
-            f.writelines(f"  IdentityFile {identityfile}\n")
+    options.setdefault("User", "root")
 
-        if addressfamily:
-            f.writelines(f"  AddressFamily {addressfamily}\n")
+    if "IdentityFile" in options:
+        options["IdentityFile"] = Path(SSH_FOLDER, options["IdentityFile"])
 
-        if port:
-            f.writelines(f"  Port {port}\n")
-
-        if user:
-            f.writelines(f"  User {user}\n")
-        else:
-            f.writelines("  User root\n")
+    lines = [f"Host {options['Host']}", f"  HostName {options['HostName']}"]
+    lines += [
+        f"  {name} {options[name]}" for name in OPTIONAL_SSH_OPTIONS if name in options
+    ]
+    return "\n".join(lines)
 
 
-def confirm_overwrite() -> None:
-    """Require explicit user acknowledgement before overwriting SSH config."""
-    prompt = f"This will overwrite {SSH_CONFIG_FILE}. Type 'yes' to continue: "
-    abort_prefix = ""
-    try:
-        user_input = input(prompt).strip().lower()
-        should_abort = user_input != "yes"
-    except KeyboardInterrupt:
-        should_abort = True
-        abort_prefix = "\n"
+def split_into_hosts(config: str) -> t.Dict[str, str]:
+    """Map each Host in a config written by this script to its section."""
+    sections = [section for section in config.strip().split("\n\n") if section]
+    return {
+        section.splitlines()[0].removeprefix("Host "): section for section in sections
+    }
 
-    if should_abort:
-        raise SystemExit(f"{abort_prefix}Aborted: SSH config was not changed.")
+
+def describe_changes(current_config: str, new_config: str) -> t.List[str]:
+    """Summarise which hosts would be added, removed or changed."""
+    current_hosts = split_into_hosts(current_config)
+    new_hosts = split_into_hosts(new_config)
+    added = [host for host in new_hosts if host not in current_hosts]
+    removed = [host for host in current_hosts if host not in new_hosts]
+    changed = [
+        host
+        for host in new_hosts
+        if host in current_hosts and new_hosts[host] != current_hosts[host]
+    ]
+
+    summary = []
+    if added:
+        summary.append(f"Added ({len(added)}): {', '.join(added)}")
+
+    if removed:
+        summary.append(f"Removed ({len(removed)}): {', '.join(removed)}")
+
+    if changed:
+        summary.append(f"Changed ({len(changed)}):")
+
+    for host in changed:
+        current_lines = current_hosts[host].splitlines()
+        new_lines = new_hosts[host].splitlines()
+        summary.append(f"  {host}")
+        summary += [
+            f"    - {line.strip()}" for line in current_lines if line not in new_lines
+        ]
+        summary += [
+            f"    + {line.strip()}" for line in new_lines if line not in current_lines
+        ]
+
+    return summary
 
 
 def main() -> None:
     """Create SSH config for all servers."""
-    confirm_overwrite()
-    reset_ssh_config()
-    bw_sync_vault()
+    unlock_vault()
+    run_bw("sync")
+    items = json.loads(run_bw("list", "items", "--search", BW_ITEM_PREFIX))
+    # Sorted so Bitwarden's ordering alone never counts as a change.
+    host_sections = sorted(section for item in items if (section := render_host(item)))
 
-    for host in bw_list_items():
-        generate_config(host)
+    current_config = SSH_CONFIG_FILE.read_text() if SSH_CONFIG_FILE.exists() else ""
+    default_key_path = select_default_ssh_key(read_default_ssh_key(current_config))
+    sections = [render_default_section(default_key_path), *host_sections]
+    new_config = "\n\n".join(sections) + "\n"
 
-    print("SSH config updated successfully.")  # noqa: T201
+    changes = describe_changes(current_config, new_config)
+    if not changes:
+        print(f"{SSH_CONFIG_FILE} is already up to date.")  # noqa: T201
+        return
+
+    print("\n".join(changes))  # noqa: T201
+    if (
+        input(f"\nWrite these changes to {SSH_CONFIG_FILE}? [y/N] ").strip().lower()
+        != "y"
+    ):
+        raise SystemExit("Aborted: SSH config was not changed.")
+
+    SSH_CONFIG_FILE.write_text(new_config)
+    host_count = len(host_sections)
+    hosts = f"{host_count} {'host' if host_count == 1 else 'hosts'}"
+    print(f"Updated {SSH_CONFIG_FILE} with {hosts}.")  # noqa: T201
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        raise SystemExit("\nAborted: SSH config was not changed.")
