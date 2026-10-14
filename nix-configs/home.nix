@@ -36,7 +36,13 @@
         xdg.configFile = {
           "zed/keymap.json".source = dotfile "zed/keymap.json";
           "zed/ruff.toml".source = dotfile "zed/ruff.toml";
-          "zed/settings.json".source = dotfile "zed/settings.json";
+        };
+
+        # Merges the baseline into Zed's own settings on every rebuild, so local tweaks stay out of the repo.
+        programs.zed-editor = {
+          enable = true;
+          package = null; # Installed as a Homebrew cask
+          userSettings = builtins.fromJSON (builtins.readFile ../zed/settings.json);
         };
       };
   };

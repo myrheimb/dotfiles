@@ -1,11 +1,3 @@
-// Zed settings
-//
-// For information on how to configure Zed, see the Zed
-// documentation: https://zed.dev/docs/configuring-zed
-//
-// To see all of Zed's default settings without changing your
-// custom settings, run `zed: open default settings` from the
-// command palette (cmd-shift-p / ctrl-shift-p)
 {
     "agent_servers": {
         "claude-acp": {
@@ -13,24 +5,24 @@
         }
     },
     "buffer_font_features": {
-        "calt": false, // Disable special symbols for == / !=
+        "calt": false
     },
     "cli_default_open_behavior": "new_window",
     "project_panel": {
-        "dock": "left",
+        "dock": "left"
     },
     "outline_panel": {
-        "dock": "left",
+        "dock": "left"
     },
     "collaboration_panel": {
-        "dock": "left",
+        "dock": "left"
     },
     "git_panel": {
         "dock": "left",
-        "tree_view": true,
+        "tree_view": true
     },
     "edit_predictions": {
-        "mode": "subtle",
+        "mode": "subtle"
     },
     "ui_font_size": 15.0,
     "buffer_font_size": 13.0,
@@ -40,14 +32,14 @@
         "enabled": true,
         "button": true,
         "favorite_models": [],
-        "model_parameters": [],
+        "model_parameters": []
     },
     "telemetry": {
         "diagnostics": false,
-        "metrics": false,
+        "metrics": false
     },
     "session": {
-        "trust_all_worktrees": true,
+        "trust_all_worktrees": true
     },
     "use_on_type_format": true,
     "show_whitespaces": "all",
@@ -58,51 +50,51 @@
     "theme": {
         "mode": "light",
         "light": "One Light",
-        "dark": "One Dark",
+        "dark": "One Dark"
     },
     "tab_size": 4,
     "languages": {
         "Markdown": {
-            "show_edit_predictions": false,
+            "show_edit_predictions": false
         },
         "CSS": {
-            "format_on_save": "off",
+            "format_on_save": "off"
         },
         "HTML": {
-            "format_on_save": "off",
+            "format_on_save": "off"
         },
         "PHP": {
-            "format_on_save": "off",
+            "format_on_save": "off"
         },
         "Python": {
             "tab_size": 4,
-            "language_servers": ["zuban", "!pyright", "!pylsp", "!ty"],
+            "language_servers": ["zuban", "!pyright", "!pylsp", "!ty"]
         },
         "Go": {
-            "hard_tabs": true,
+            "hard_tabs": true
         },
         "Shell Script": {
-            "tab_size": 2,
+            "tab_size": 2
         },
         "JSON": {
-            "tab_size": 2,
+            "tab_size": 2
         },
         "Nix": {
-            "tab_size": 2,
+            "tab_size": 2
         },
         "YAML": {
             "tab_size": 2,
-            "format_on_save": "off",
-        },
+            "format_on_save": "off"
+        }
     },
     "lsp": {
         "ruff": {
             "initialization_options": {
                 "settings": {
                     "configurationPreference": "filesystemFirst",
-                    "configuration": "~/.config/zed/ruff.toml",
-                },
-            },
-        },
-    },
+                    "configuration": "~/.config/zed/ruff.toml"
+                }
+            }
+        }
+    }
 }

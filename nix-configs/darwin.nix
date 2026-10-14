@@ -34,6 +34,9 @@ in
     };
   };
 
+  # Keep Terminal.app from copying each tab's shell history into ~/.bash_sessions and ~/.zsh_sessions.
+  environment.variables.SHELL_SESSIONS_DISABLE = "1";
+
   # macOS settings
   # Ref: https://nix-darwin.github.io/nix-darwin/manual/index.html
   # NSGlobalDomain = all users

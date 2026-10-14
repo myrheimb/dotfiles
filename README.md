@@ -47,7 +47,9 @@ First time, use this command and replace `ComputerName` with the host name you a
 sudo nix run nix-darwin --extra-experimental-features nix-command --extra-experimental-features flakes -- switch --flake ~/.dotfiles/nix-configs#ComputerName
 ```
 
-The rebuild links `.zshrc`, `.hushlogin` and the Zed and Claude Code configs from this repo into your home folder, see `nix-configs/home.nix`. Any file already in the way is renamed with a `.before-home-manager` suffix.
+The rebuild links `.zshrc`, `.hushlogin`, the Claude Code configs and Zed's keymap and `ruff.toml` from this repo into your home folder, see `nix-configs/home.nix`. Any file already in the way is renamed with a `.before-home-manager` suffix.
+
+Zed's `settings.json` is a baseline instead of a link. Each rebuild merges `zed/settings.json` into Zed's own settings file: baseline keys win, and anything you add in Zed stays on that machine. To share a tweak across machines, copy it into `zed/settings.json`.
 
 For subsequent rebuilds, simply use the alias.
 ```bash
