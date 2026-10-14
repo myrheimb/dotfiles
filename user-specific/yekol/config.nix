@@ -27,10 +27,8 @@
     pkgs.id3v2 # A command line editor for id3v2 tags
     pkgs.mkvtoolnix # Cross-platform tools for Matroska video containers
     pkgs.ngrok # Expose a web server running on your local machine to the internet
-    # pkgs.oci-cli  # Command Line Interface for Oracle Cloud Infrastructure
     pkgs.pdsh # Issue commands to groups of hosts in parallel
     pkgs.yt-dlp # Download video files from YouTube
-    # pkgs.vobsub2srt  # Converts VobSub subtitles into SRT subtitles
     unstablePkgs.zuse # CLI IRC client written in Go
   ];
 
@@ -40,22 +38,19 @@
       "discord"
       "heroic"
       "moonlight"
-      "nvidia-geforce-now"
       "plex"
       "steam"
     ];
     # App store apps
     masApps = {
       "AutoInvert" = 6443480300;
-      "FileZilla" = 1298486723;
       "Goodnotes" = 1444383602;
       "Keynote" = 361285480;
       "Line" = 539883307;
-      "NordVPN" = 905953485;
       "Numbers" = 361304891;
       "Pages" = 361309726;
       "SteamLink" = 1246969117;
-      "Wireguard" = 1451685025;
+      "Tailscale" = 1475387142;
     };
   };
 
