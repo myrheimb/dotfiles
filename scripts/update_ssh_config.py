@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Create/update the local SSH config file with server info fetched from Bitwarden."""
 
 from os import getenv

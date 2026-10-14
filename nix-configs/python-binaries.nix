@@ -1,36 +1,42 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  unstablePkgs,
+  python,
+  ...
+}:
 
 let
 
-  # Create a binary inside /nix/store for securepass.py
-  securepass = pkgs.stdenv.mkDerivation {
-    name = "securepass";
-    buildInputs = [ pkgs.python313 ];
-    unpackPhase = "true";
-    installPhase = ''
-      mkdir -p $out/bin
-      cp ${../scripts/securepass.py} $out/bin/securepass
-      chmod +x $out/bin/securepass
-    '';
-  };
+  # Pin the interpreter instead of using writePython3Bin, which follows whatever
+  # pkgs.python3 happens to be.
+  writePythonBin =
+    name:
+    pkgs.writers.makePythonWriter python python.pkgs python.pythonOnBuildForHost.pkgs "/bin/${name}";
 
-  # Create a binary inside /nix/store for update-ssh-config.py
-  update-ssh-config = pkgs.stdenv.mkDerivation {
-    name = "update-ssh-config";
-    buildInputs = [ pkgs.python313 ];
-    unpackPhase = "true";
-    installPhase = ''
+  # runtimeInputs are put on PATH for the script, for tools it shells out to.
+  mkPythonBin =
+    name: libraries: runtimeInputs: script:
+    let
+      unwrapped = writePythonBin name {
+        inherit libraries;
+        doCheck = false;
+      } (builtins.readFile script);
+    in
+    pkgs.runCommand name { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
       mkdir -p $out/bin
-      cp ${../scripts/update_ssh_config.py} $out/bin/update-ssh-config
-      chmod +x $out/bin/update-ssh-config
+      makeWrapper ${unwrapped}/bin/${name} $out/bin/${name} \
+        --prefix PATH : ${pkgs.lib.makeBinPath runtimeInputs}
     '';
-  };
+
+  pythonBins = [
+    (mkPythonBin "securepass" [ ] [ ] ../scripts/securepass.py)
+    (mkPythonBin "update-ssh-config" [ ] [
+      unstablePkgs.bitwarden-cli
+    ] ../scripts/update_ssh_config.py)
+  ];
 
 in
 
 {
-  environment.systemPackages = [
-    securepass
-    update-ssh-config
-  ];
+  environment.systemPackages = pythonBins;
 }
