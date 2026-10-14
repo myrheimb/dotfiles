@@ -8,7 +8,12 @@
     backupFileExtension = "before-home-manager";
 
     users.${config.user.name} =
-      { config, ... }:
+      {
+        config,
+        lib,
+        pkgs,
+        ...
+      }:
       let
         # Link to the checkout, not a store copy, so edits apply without a rebuild.
         dotfile =
@@ -16,6 +21,10 @@
       in
       {
         home.stateVersion = "26.05";
+
+        home.activation.dotfilesGitHooks = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          run ${pkgs.git}/bin/git -C ${config.home.homeDirectory}/.dotfiles config core.hooksPath .githooks
+        '';
 
         home.file = {
           ".claude/CLAUDE.md".source = dotfile "claude/CLAUDE.md";

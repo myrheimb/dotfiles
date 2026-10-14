@@ -1,0 +1,3 @@
+#!/bin/sh
+# uv2nix installs only what uv.lock lists, so a stale lock silently drops packages.
+uv lock --check --offline --quiet --directory nix-configs/python-env

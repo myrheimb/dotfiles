@@ -66,6 +66,8 @@ uv lock --directory ~/.dotfiles/nix-configs/python-env
 nixrb
 ```
 
+A pre-commit hook in `.githooks/` rejects commits while `uv.lock` is out of date with `pyproject.toml`.
+
 Use `uv lock --upgrade` to bump versions, or `--upgrade-package NAME` for just one.
 
 Add a new dependency (unpinned) with `uv add --raw --no-sync --directory ~/.dotfiles/nix-configs/python-env NAME`.
