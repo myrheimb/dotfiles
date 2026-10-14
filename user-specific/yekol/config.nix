@@ -25,7 +25,6 @@
   environment.systemPackages = [
     pkgs.exercism # A Go based command line tool for exercism.io
     pkgs.id3v2 # A command line editor for id3v2 tags
-    pkgs.localsend # Open source cross-platform alternative to AirDrop
     pkgs.mkvtoolnix # Cross-platform tools for Matroska video containers
     pkgs.ngrok # Expose a web server running on your local machine to the internet
     # pkgs.oci-cli  # Command Line Interface for Oracle Cloud Infrastructure
