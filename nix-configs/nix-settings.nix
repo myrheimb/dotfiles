@@ -57,11 +57,6 @@
 
   nixpkgs.hostPlatform = config.user.system;
 
-  # Enable nix-direnv
-  environment.pathsToLink = [
-    "/share/nix-direnv"
-  ];
-
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
   system.stateVersion = 6;

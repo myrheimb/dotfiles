@@ -15,7 +15,6 @@
     pkgs.coreutils # The basic file, shell and text manipulation utilities of the GNU operating system
     unstablePkgs.devenv # Fast, Declarative, Reproducible, and Composable Developer Environments
     pkgs.dig # DNS lookup utility
-    pkgs.direnv # A shell extension that manages your environment
     pkgs.docker-compose # Docker CLI plugin to define and run multi-container applications with Docker
     pkgs.ext4fuse # FUSE driver for ext2, 3, and 4
     pkgs.fasttext # Library for text classification and representation learning
@@ -33,7 +32,6 @@
     pkgs.nil # Yet another language server for Nix
     pkgs.nixd # Feature-rich Nix language server interoperating with C++ nix
     pkgs.nmap # A utility for network discovery and security auditing
-    pkgs.nix-direnv # A fast, persistent use_nix implementation for direnv
     pkgs.nmap # A utility for network discovery and security auditing
     pkgs.parallel # Shell tool for executing jobs in parallel
     pkgs.pgweb # A web-based database browser for PostgreSQL
@@ -93,22 +91,24 @@
     enableAutosuggestions = true;
     enableBashCompletion = true;
     enableCompletion = true;
-    variables = {
-      LC_ALL = "en_US.UTF-8";
-      LANG = "en_US.UTF-8";
+  };
 
-      # Enable OMZ
-      ZSH = "${pkgs.oh-my-zsh}/share/oh-my-zsh";
-      ZSH_THEME = "aussiegeek";
-      ZSH_CUSTOM = "${./..}/zsh";
+  # Exported to every zsh, including the non-login shells devenv spawns.
+  environment.variables = {
+    LC_ALL = "en_US.UTF-8";
+    LANG = "en_US.UTF-8";
 
-      # Enable a few neat features
-      HYPHEN_INSENSITIVE = "true";
-      COMPLETION_WAITING_DOTS = "true";
+    # Enable OMZ
+    ZSH = "${pkgs.oh-my-zsh}/share/oh-my-zsh";
+    ZSH_THEME = "aussiegeek";
+    ZSH_CUSTOM = "${./..}/zsh";
 
-      # Disable generation of .pyc files
-      # https://docs.python-guide.org/writing/gotchas/#disabling-bytecode-pyc-files
-      PYTHONDONTWRITEBYTECODE = "1";
-    };
+    # Enable a few neat features
+    HYPHEN_INSENSITIVE = "true";
+    COMPLETION_WAITING_DOTS = "true";
+
+    # Disable generation of .pyc files
+    # https://docs.python-guide.org/writing/gotchas/#disabling-bytecode-pyc-files
+    PYTHONDONTWRITEBYTECODE = "1";
   };
 }
