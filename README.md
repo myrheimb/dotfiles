@@ -67,6 +67,22 @@ For subsequent rebuilds, simply use the alias.
 nixrb
 ```
 
+## Managing the global Python
+
+Dependencies for the system-wide `python3` live in `nix-configs/python-env/pyproject.toml`,
+pinned in `uv.lock` and built by [uv2nix](https://github.com/pyproject-nix/uv2nix).
+Don't add packages directly in `python.nix`.
+
+After editing `pyproject.toml`, re-resolve and rebuild.
+```bash
+uv lock --directory ~/.dotfiles/nix-configs/python-env
+nixrb
+```
+
+Use `uv lock --upgrade` to bump versions, or `--upgrade-package NAME` for just one.
+
+Add a new dependency (unpinned) with `uv add --raw --no-sync --directory ~/.dotfiles/nix-configs/python-env NAME`.
+
 ## Optional: Personal Binary Cache
 
 If you run a [personal binary cache](https://nix.dev/tutorials/nixos/binary-cache-setup.html), store the settings in `/etc/nix/local.conf`.

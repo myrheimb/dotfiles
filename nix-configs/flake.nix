@@ -7,6 +7,24 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+
+    # Build the global Python environment from python-env/{pyproject.toml,uv.lock}
+    pyproject-nix = {
+      url = "github:pyproject-nix/pyproject.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    uv2nix = {
+      url = "github:pyproject-nix/uv2nix";
+      inputs.pyproject-nix.follows = "pyproject-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    pyproject-build-systems = {
+      url = "github:pyproject-nix/build-system-pkgs";
+      inputs.pyproject-nix.follows = "pyproject-nix";
+      inputs.uv2nix.follows = "uv2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
       flake = false;
@@ -26,6 +44,9 @@
       nix-homebrew,
       homebrew-core,
       homebrew-cask,
+      # pyproject-nix / uv2nix / pyproject-build-systems are consumed by
+      # python.nix through the `inputs` specialArg.
+      ...
     }:
     let
       mkDarwin =
@@ -38,6 +59,7 @@
           system = system;
           # Make pkgs from unstable available to subsequent config files
           specialArgs = {
+            inherit inputs;
             unstablePkgs = import unstable {
               inherit system;
               config = {
