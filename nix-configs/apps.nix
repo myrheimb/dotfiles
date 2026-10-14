@@ -68,8 +68,8 @@
     enable = true;
     user = config.user.name;
     brews = [
-      # "foo"
-      # "bar"
+      # Homebrew installs mas on its own for masApps, but cleanup would remove it.
+      "mas"
     ];
     casks = [
       "alt-tab"
@@ -95,7 +95,7 @@
       "Speedtest by Ookla" = 1153157709;
     };
     onActivation.autoUpdate = true; # runs brew update first
-    onActivation.cleanup = "zap"; # clean whenever we rebuild
+    onActivation.cleanup = "uninstall"; # remove formulae/casks not listed here
     onActivation.upgrade = true;   # upgrades formulae/casks on rebuild
   };
 
