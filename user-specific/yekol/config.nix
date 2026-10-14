@@ -59,4 +59,6 @@
       "Wireguard" = 1451685025;
     };
   };
+
+  security.pam.services.sudo_local.watchIdAuth = true;
 }
