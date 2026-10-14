@@ -27,11 +27,32 @@
     "deny": [
       "Bash(git push:*)",
       "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(~/.ansible/**)",
       "Read(~/.aws/**)",
+      "Read(~/.bash_history)",
+      "Read(~/.bash_sessions/**)",
+      "Read(~/.claude.json)",
+      "Read(~/.codex/**)",
       "Read(~/.config/gh/**)",
+      "Read(~/.docker/**)",
+      "Read(~/.gemini/**)",
       "Read(~/.gnupg/**)",
       "Read(~/.netrc)",
-      "Read(~/.ssh/**)"
+      "Read(~/.putty/**)",
+      "Read(~/.python_history)",
+      "Read(~/.ssh/**)",
+      "Read(~/.zsh_history)",
+      "Read(~/.zsh_sessions/**)",
+      "Read(~/Library/Application Support/Firefox/**)",
+      "Read(~/Library/Application Support/Google/**)",
+      "Read(~/Library/CloudStorage/**)",
+      "Read(~/Library/Cookies/**)",
+      "Read(~/Library/Keychains/**)",
+      "Read(~/Library/Mail/**)",
+      "Read(~/Library/Messages/**)",
+      "Read(~/Library/Mobile Documents/**)",
+      "Read(~/MEGA/**)"
     ]
   },
   "sandbox": {
