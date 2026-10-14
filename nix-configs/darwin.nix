@@ -45,6 +45,10 @@ in
     applicationFirewall.enableStealthMode = true;
   };
 
+  system.defaults.loginwindow.PowerOffDisabledWhileLoggedIn = false;
+  system.defaults.loginwindow.ShutDownDisabledWhileLoggedIn = false;
+  system.defaults.loginwindow.RestartDisabledWhileLoggedIn = false;
+
   system.defaults = {
     iCal."first day of week" = "Monday";
 
