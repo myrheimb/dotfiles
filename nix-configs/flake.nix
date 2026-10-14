@@ -53,6 +53,9 @@
             nix-homebrew.darwinModules.nix-homebrew
             {
               nix-homebrew = {
+                enable = true;
+                user = name;
+
                 # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
                 enableRosetta = true;
 
