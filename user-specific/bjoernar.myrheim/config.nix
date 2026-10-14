@@ -21,8 +21,15 @@
   ];
 
   homebrew = {
+    brews = [
+    ];
+
     casks = [
+      "onedrive"
       "openvpn-connect"
     ];
+    masApps = {
+      # "AppName" = 12345;
+    };
   };
 }

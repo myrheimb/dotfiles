@@ -40,7 +40,6 @@
       "heroic"
       "nvidia-geforce-now"
       "plex"
-      "raspberry-pi-imager"
       "steam"
     ];
     # App store apps

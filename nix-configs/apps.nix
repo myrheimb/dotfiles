@@ -56,6 +56,12 @@
     pkgs.zbar # Read bar codes from various sources
     pkgs.zstd # Manage zstd archives. E.g. 'zstd --decompress archive.zst'
     unstablePkgs.zuban # Mypy-compatible Python Language Server built in Rust
+    # GUI apps
+    unstablePkgs.claude-code # Agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
+    pkgs.maccy # Simple clipboard manager for macOS
+    pkgs.keka # macOS file archiver
+    pkgs.appcleaner # Uninstall unwanted apps
+    pkgs.moonlight-qt
   ];
 
   homebrew = {
@@ -66,28 +72,31 @@
       # "bar"
     ];
     casks = [
-      "appcleaner"
-      "bitwarden"
+      "alt-tab"
       "docker-desktop"
       "gimp"
       "hot"
-      "keka"
       "logi-options+"
-      "maccy"
       "megasync"
       "notion"
       "plexamp"
-      "slack"
+      "protonvpn"
+      "raspberry-pi-imager"
       "tiles"
+      "ungoogled-chromium"
       "vlc"
       "zed"
       "zen"
     ];
     # App store apps
     masApps = {
-      # "App" = 123456;
+      "Bitwarden" = 1352778147;
+      "Slack" = 803453959;
+      "Speedtest by Ookla" = 1153157709;
     };
+    onActivation.autoUpdate = true; # runs brew update first
     onActivation.cleanup = "zap"; # clean whenever we rebuild
+    onActivation.upgrade = true;   # upgrades formulae/casks on rebuild
   };
 
   programs.zsh = {
