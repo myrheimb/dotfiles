@@ -48,14 +48,16 @@ ln -sv ~/.dotfiles/zed/keymap.json ~/.config/zed/keymap.json
 ln -sv ~/.dotfiles/zed/ruff.toml ~/.config/zed/ruff.toml
 ```
 
-**3. Add your own username and desired computer/host name**
-```bash
-nano ~/.dotfiles/user-specific/identity.nix
+**3. Add your machine**
+
+Add an entry for your computer/host name to `darwinConfigurations` in `nix-configs/flake.nix`, and a matching `user-specific/<username>/` folder.
+```nix
+MyBook = mkDarwin { hostname = "MyBook"; name = "username"; };
 ```
 
 **4. Rebuild the system (takes a few minutes the first time)**
 
-First time, use this command and replace `ComputerName` with the computer name you set in `identity.nix`.
+First time, use this command and replace `ComputerName` with the host name you added to `flake.nix`.
 ```bash
 sudo nix run nix-darwin --extra-experimental-features nix-command --extra-experimental-features flakes -- switch --flake ~/.dotfiles/nix-configs#ComputerName
 ```
