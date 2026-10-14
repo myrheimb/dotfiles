@@ -6,11 +6,6 @@ fi
 # Apply zsh theme
 source "$ZSH/oh-my-zsh.sh"
 
-# Ensure local fasttext model
-source $HOME/.dotfiles/languageTool/setup.sh
-create_properties_file
-download_fasttext_model
-
 # Load user-specific settings, aliases, and functions
 source "$HOME/.dotfiles/zsh/aliases.zsh"
 source "$HOME/.dotfiles/zsh/functions.zsh"
