@@ -61,7 +61,6 @@
     pkgs.maccy # Simple clipboard manager for macOS
     pkgs.keka # macOS file archiver
     pkgs.appcleaner # Uninstall unwanted apps
-    pkgs.moonlight-qt
   ];
 
   homebrew = {

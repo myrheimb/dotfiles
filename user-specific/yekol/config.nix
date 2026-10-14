@@ -1,6 +1,8 @@
 { pkgs, unstablePkgs, ... }:
 
 {
+  imports = [ ./moonlight-awdl.nix ];
+
   system.defaults.dock.persistent-apps = [
     { app = "/Applications/Zen.app"; }
     { app = "/System/Applications/Mail.app"; }
@@ -38,6 +40,7 @@
       "anki"
       "discord"
       "heroic"
+      "moonlight"
       "nvidia-geforce-now"
       "plex"
       "steam"
