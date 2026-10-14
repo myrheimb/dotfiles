@@ -5,3 +5,6 @@ Thumbs.db
 
 # Nix related paths
 result
+
+# Cache
+__pycache__

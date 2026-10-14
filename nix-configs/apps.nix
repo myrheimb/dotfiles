@@ -27,6 +27,7 @@
     pkgs.grc # Generic text colouriser
     pkgs.htop # An interactive process viewer
     pkgs.languagetool # A proofreading program, similar to Grammarly
+    pkgs.localsend # Open source cross-platform alternative to AirDrop
     unstablePkgs.mactop # Terminal-based monitoring tool for Apple Silicon chips
     pkgs.mc # CLI-based file manager like Norton Commander
     pkgs.mozjpeg # Mozilla JPEG Encoder Project (compress image files)
@@ -61,7 +62,6 @@
     pkgs.maccy # Simple clipboard manager for macOS
     pkgs.keka # macOS file archiver
     pkgs.appcleaner # Uninstall unwanted apps
-    pkgs.moonlight-qt
   ];
 
   homebrew = {

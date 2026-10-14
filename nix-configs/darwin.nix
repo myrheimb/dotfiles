@@ -132,6 +132,6 @@ in
     };
   };
 
-  # Enable TouchID and Apple Watch unlock for sudo
+  # Enable TouchID unlock for sudo
   security.pam.services.sudo_local.touchIdAuth = true;
 }
