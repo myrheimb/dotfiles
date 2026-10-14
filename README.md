@@ -81,24 +81,3 @@ nixrb
 Use `uv lock --upgrade` to bump versions, or `--upgrade-package NAME` for just one.
 
 Add a new dependency (unpinned) with `uv add --raw --no-sync --directory ~/.dotfiles/nix-configs/python-env NAME`.
-
-## Optional: Personal Binary Cache
-
-If you run a [personal binary cache](https://nix.dev/tutorials/nixos/binary-cache-setup.html), store the settings in `/etc/nix/local.conf`.
-
-Bootstrap the file by running the command below.
-
-```bash
-sudo tee /etc/nix/local.conf >/dev/null <<EOF
-extra-substituters = https://binary-cache.tld
-extra-trusted-public-keys = binary-cache.tld:PUBLIC_KEY_HERE
-extra-secret-key-files = /etc/nix/binary-cache.tld.priv
-EOF
-```
-
-Make sure the private key is at the expected location.
-E.g.,
-
-```bash
-sudo cp ~/.ssh/binary-cache.tld.priv /etc/nix/binary-cache.tld.priv
-```
