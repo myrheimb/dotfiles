@@ -7,12 +7,35 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+    "agent_servers": {
+        "claude-acp": {
+            "type": "registry"
+        }
+    },
+    "buffer_font_features": {
+        "calt": false, // Disable special symbols for == / !=
+    },
+    "cli_default_open_behavior": "new_window",
+    "project_panel": {
+        "dock": "left",
+    },
+    "outline_panel": {
+        "dock": "left",
+    },
+    "collaboration_panel": {
+        "dock": "left",
+    },
+    "git_panel": {
+        "dock": "left",
+        "tree_view": true,
+    },
     "edit_predictions": {
         "mode": "subtle",
     },
     "ui_font_size": 15.0,
     "buffer_font_size": 13.0,
     "agent": {
+        "dock": "right",
         "enable_feedback": true,
         "enabled": true,
         "button": true,
@@ -28,7 +51,7 @@
     },
     "use_on_type_format": true,
     "show_whitespaces": "all",
-    "show_edit_predictions": true,
+    "show_edit_predictions": false,
     "wrap_guides": [88],
     "icon_theme": "Zed (Default)",
     "base_keymap": "VSCode",
@@ -39,6 +62,9 @@
     },
     "tab_size": 4,
     "languages": {
+        "Markdown": {
+            "show_edit_predictions": false,
+        },
         "CSS": {
             "format_on_save": "off",
         },
@@ -50,6 +76,7 @@
         },
         "Python": {
             "tab_size": 4,
+            "language_servers": ["zuban", "!pyright", "!pylsp", "!ty"],
         },
         "Go": {
             "hard_tabs": true,
@@ -65,6 +92,7 @@
         },
         "YAML": {
             "tab_size": 2,
+            "format_on_save": "off",
         },
     },
     "lsp": {

@@ -17,4 +17,22 @@
             ],
         },
     },
+    {
+        "context": "InlineAssistant > Editor",
+        "unbind": {
+            "alt-tab": "agent::CycleFavoriteModels"
+        }
+    },
+    {
+        "context": "AcpThread > Editor",
+        "unbind": {
+            "alt-tab": "agent::CycleFavoriteModels"
+        }
+    },
+    {
+        "context": "AcpThread",
+        "unbind": {
+            "alt-tab": "agent::CycleFavoriteModels"
+        }
+    }
 ]
