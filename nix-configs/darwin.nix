@@ -16,6 +16,7 @@ in
 {
   imports = [
     ./apps.nix
+    ./home.nix
     ./nix-settings.nix
     ./python.nix
     ./python-binaries.nix

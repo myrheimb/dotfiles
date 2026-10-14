@@ -33,33 +33,21 @@ xcode-select --install
 git clone https://github.com/myrheimb/dotfiles.git ~/.dotfiles
 ```
 
-**2. Add symlinks to set things up**
-```bash
-ln -sv ~/.dotfiles/.zshrc ~/
-ln -sv ~/.dotfiles/.hushlogin ~/
-```
-
-Optional: Additional symlinks if you use the Zed editor.
-```bash
-[[ -d ~/.config/zed ]] || mkdir -p ~/.config/zed
-ln -sv ~/.dotfiles/zed/settings.json ~/.config/zed/settings.json
-ln -sv ~/.dotfiles/zed/keymap.json ~/.config/zed/keymap.json
-ln -sv ~/.dotfiles/zed/ruff.toml ~/.config/zed/ruff.toml
-```
-
-**3. Add your machine**
+**2. Add your machine**
 
 Add an entry for your computer/host name to `darwinConfigurations` in `nix-configs/flake.nix`, and a matching `user-specific/<username>/` folder.
 ```nix
 MyBook = mkDarwin { hostname = "MyBook"; name = "username"; };
 ```
 
-**4. Rebuild the system (takes a few minutes the first time)**
+**3. Rebuild the system (takes a few minutes the first time)**
 
 First time, use this command and replace `ComputerName` with the host name you added to `flake.nix`.
 ```bash
 sudo nix run nix-darwin --extra-experimental-features nix-command --extra-experimental-features flakes -- switch --flake ~/.dotfiles/nix-configs#ComputerName
 ```
+
+The rebuild links `.zshrc`, `.hushlogin` and the Zed and Claude Code configs from this repo into your home folder, see `nix-configs/home.nix`. Any file already in the way is renamed with a `.before-home-manager` suffix.
 
 For subsequent rebuilds, simply use the alias.
 ```bash

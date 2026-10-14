@@ -7,6 +7,8 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    home-manager.url = "github:nix-community/home-manager/release-26.05";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # Build the global Python environment from python-env/{pyproject.toml,uv.lock}
     pyproject-nix = {
@@ -42,6 +44,7 @@
       nixpkgs,
       unstable,
       nix-homebrew,
+      home-manager,
       homebrew-core,
       homebrew-cask,
       # pyproject-nix / uv2nix / pyproject-build-systems are consumed by
@@ -71,6 +74,7 @@
             ./darwin.nix
             { user = { inherit hostname name system; }; }
             ../user-specific/${name}/config.nix
+            home-manager.darwinModules.home-manager
 
             nix-homebrew.darwinModules.nix-homebrew
             {
