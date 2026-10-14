@@ -8,10 +8,7 @@ from subprocess import run
 import json
 import typing as t
 
-USER = getenv("USER")
-USER_HOME = Path(getenv("HOME", f"/Users/{USER}"))
-
-SSH_FOLDER = Path(USER_HOME, ".ssh")
+SSH_FOLDER = Path(Path.home(), ".ssh")
 SSH_CONFIG_FILE = Path(SSH_FOLDER, "config")
 
 BW_ITEM_PREFIX = "ssh-config-"
@@ -26,6 +23,7 @@ if not getenv("BW_SESSION"):
 VALID_SSH_OPTIONS = frozenset(
     {
         "AddressFamily",
+        "BatchMode",
         "Host",
         "HostName",
         "IdentityFile",
