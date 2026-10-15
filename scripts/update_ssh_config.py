@@ -1,5 +1,8 @@
 """Create/update the local SSH config file with server info fetched from Bitwarden."""
 
+from datetime import datetime
+from datetime import timedelta
+from datetime import timezone
 from os import environ
 from pathlib import Path
 from subprocess import PIPE
@@ -15,6 +18,9 @@ SSH_FOLDER = Path(Path.home(), ".ssh")
 SSH_CONFIG_FILE = Path(SSH_FOLDER, "config")
 
 BW_ITEM_PREFIX = "ssh-config-"
+# Bitwarden drops a CLI login after about this long without use, but bw only
+# notices after asking for the master password.
+BW_LOGIN_LIFETIME = timedelta(days=30)
 
 SSH_PRIVATE_KEY_HEADERS = frozenset(
     {
@@ -54,11 +60,16 @@ def run_bw(*arguments: str) -> str:
 
 def unlock_vault() -> None:
     """Log in to or unlock Bitwarden if needed, keeping the session for this run."""
-    status = json.loads(run_bw("status"))["status"]
+    state = json.loads(run_bw("status"))
+    status = state["status"]
     if status == "unlocked":
         return
 
-    if status == "unauthenticated":
+    if status == "locked" and is_login_expired(state["lastSync"]):
+        run_bw("logout")
+        command = "login"
+        message = "Your Bitwarden login has likely expired. Log in again to fetch your SSH hosts."
+    elif status == "unauthenticated":
         command = "login"
         message = "Log in to Bitwarden to fetch your SSH hosts."
     else:
@@ -74,6 +85,17 @@ def unlock_vault() -> None:
         raise SystemExit(f"'bw {command}' failed.\nSSH config was not changed.")
 
     environ["BW_SESSION"] = result.stdout.strip()
+
+
+def is_login_expired(last_sync: t.Optional[str]) -> bool:
+    """Guess from the last sync whether Bitwarden has dropped the CLI login."""
+    if last_sync is None:
+        return False
+
+    return (
+        datetime.now(timezone.utc) - datetime.fromisoformat(last_sync)
+        > BW_LOGIN_LIFETIME
+    )
 
 
 def is_private_ssh_key(path: Path) -> bool:
