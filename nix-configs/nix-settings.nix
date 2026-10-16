@@ -36,10 +36,6 @@
     # The values auto and 0 will use all available cores
     max-jobs = "auto";
     cores = 0;
-    trusted-users = [
-      "root"
-      config.user.name
-    ];
     download-buffer-size = 536870912; # 512 MB
     substituters = [
       "https://cache.nixos.org"

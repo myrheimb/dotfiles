@@ -61,7 +61,6 @@
     "failIfUnavailable": true,
     "filesystem": {
       "allowWrite": [
-        "~/.cache/nix",
         "~/.cache/uv",
         "~/Library/Caches/go-build",
         "~/go"
@@ -69,14 +68,11 @@
     },
     "network": {
       "allowedDomains": [
-        "*.cachix.org",
-        "cache.nixos.org",
         "files.pythonhosted.org",
         "github.com",
         "proxy.golang.org",
         "pypi.org"
-      ],
-      "allowUnixSockets": ["/nix/var/nix/daemon-socket/socket"]
+      ]
     }
   },
   "hooks": {
