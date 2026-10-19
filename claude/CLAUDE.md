@@ -43,8 +43,10 @@ The best code is the code never written. Before writing any, stop at the first r
 Lazy means efficient, not careless. Deletion over addition, boring over clever, fewest files possible. Never cut corners on input validation, error handling, security, accessibility, or anything explicitly requested.
 
 ## Tools
-- If a CLI tool is missing, run it with `nix-shell -p <package> --run '<command>'`. Don't install it.
-- For one-off Python packages, use `nix-shell -p python314Packages.<package> --run '<command>'`. Don't use pip or uv.
+- Before deleting a file, say whether git can restore it. If it can't, ask what to do.
+- If a CLI tool is missing, run it with `/run/current-system/sw/bin/nix-shell -p <package> --run '<command>'`. Don't install it.
+- For one-off Python packages, use `/run/current-system/sw/bin/nix-shell -p python314Packages.<package> --run '<command>'`. Don't use pip or uv.
+- Run Nix commands as a call of their own, without `cd`, redirects or `$(...)`. Otherwise they stay sandboxed and can't reach the Nix daemon.
 
 ## Code Style
 

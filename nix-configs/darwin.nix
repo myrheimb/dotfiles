@@ -12,6 +12,21 @@ let
     fasttextModel=${fasttextModel}
     fasttextBinary=${pkgs.fasttext}/bin/fasttext
   '';
+  claudeManagedSettings = pkgs.writeText "managed-settings.json" (
+    builtins.toJSON {
+      sandbox = {
+        allowUnsandboxedCommands = false;
+        enabled = true;
+        # Nix needs its daemon, which sandboxed commands can't reach. Full paths keep a repo's own `nix` on PATH from matching.
+        excludedCommands = [
+          "/run/current-system/sw/bin/nix *"
+          "/run/current-system/sw/bin/nix-instantiate *"
+          "/run/current-system/sw/bin/nix-shell *"
+        ];
+        failIfUnavailable = true;
+      };
+    }
+  );
 in
 {
   imports = [
@@ -36,6 +51,12 @@ in
 
   # Keep Terminal.app from copying each tab's shell history into ~/.bash_sessions and ~/.zsh_sessions.
   environment.variables.SHELL_SESSIONS_DISABLE = "1";
+
+  # Root owns this file, so nothing Claude runs can loosen the sandbox, and as managed settings it stops repo settings from widening it.
+  system.activationScripts.postActivation.text = ''
+    install -d -o root -g wheel -m 0755 "/Library/Application Support/ClaudeCode"
+    install -o root -g wheel -m 0444 ${claudeManagedSettings} "/Library/Application Support/ClaudeCode/managed-settings.json"
+  '';
 
   # macOS settings
   # Ref: https://nix-darwin.github.io/nix-darwin/manual/index.html

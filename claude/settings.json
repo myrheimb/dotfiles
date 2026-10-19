@@ -1,6 +1,7 @@
 {
   "attribution": false,
   "autoMemoryEnabled": false,
+  "deniedMcpServers": [{ "serverName": "claude.ai Claude Docs" }],
   "theme": "light",
   "env": {
     "GIT_CONFIG_COUNT": "2",
@@ -10,6 +11,19 @@
     "GIT_CONFIG_VALUE_1": "https://"
   },
   "permissions": {
+    "allow": [
+      "mcp__claude_ai_ClickUp__clickup_download_*",
+      "mcp__claude_ai_ClickUp__clickup_filter_*",
+      "mcp__claude_ai_ClickUp__clickup_find_*",
+      "mcp__claude_ai_ClickUp__clickup_get_*",
+      "mcp__claude_ai_ClickUp__clickup_list_*",
+      "mcp__claude_ai_ClickUp__clickup_resolve_*",
+      "mcp__claude_ai_ClickUp__clickup_search*",
+      "mcp__claude_ai_Slack__slack_get_*",
+      "mcp__claude_ai_Slack__slack_list_*",
+      "mcp__claude_ai_Slack__slack_read_*",
+      "mcp__claude_ai_Slack__slack_search_*"
+    ],
     "ask": [
       "Bash(gh pr create:*)",
       "Bash(gh pr merge:*)",
@@ -19,10 +33,7 @@
       "Bash(git reset --hard:*)",
       "Bash(git restore:*)",
       "Bash(git stash drop:*)",
-      "Bash(rm -rf:*)",
-      "mcp__claude_ai_ClickUp__clickup_delete_task",
-      "mcp__claude_ai_Slack__slack_schedule_message",
-      "mcp__claude_ai_Slack__slack_send_message"
+      "Bash(rm:*)"
     ],
     "deny": [
       "Bash(git push:*)",
@@ -52,7 +63,26 @@
       "Read(~/Library/Mail/**)",
       "Read(~/Library/Messages/**)",
       "Read(~/Library/Mobile Documents/**)",
-      "Read(~/MEGA/**)"
+      "Read(~/MEGA/**)",
+      "mcp__claude_ai_ClickUp__clickup_add_*",
+      "mcp__claude_ai_ClickUp__clickup_attach_*",
+      "mcp__claude_ai_ClickUp__clickup_create_*",
+      "mcp__claude_ai_ClickUp__clickup_delete_*",
+      "mcp__claude_ai_ClickUp__clickup_execute_*",
+      "mcp__claude_ai_ClickUp__clickup_merge_*",
+      "mcp__claude_ai_ClickUp__clickup_move_*",
+      "mcp__claude_ai_ClickUp__clickup_remove_*",
+      "mcp__claude_ai_ClickUp__clickup_request_*",
+      "mcp__claude_ai_ClickUp__clickup_send_*",
+      "mcp__claude_ai_ClickUp__clickup_start_*",
+      "mcp__claude_ai_ClickUp__clickup_stop_*",
+      "mcp__claude_ai_ClickUp__clickup_update_*",
+      "mcp__claude_ai_Slack__slack_add_*",
+      "mcp__claude_ai_Slack__slack_complete_*",
+      "mcp__claude_ai_Slack__slack_create_*",
+      "mcp__claude_ai_Slack__slack_schedule_*",
+      "mcp__claude_ai_Slack__slack_send_*",
+      "mcp__claude_ai_Slack__slack_update_*"
     ]
   },
   "sandbox": {
@@ -61,7 +91,6 @@
     "failIfUnavailable": true,
     "filesystem": {
       "allowWrite": [
-        "~/.cache/nix",
         "~/.cache/uv",
         "~/Library/Caches/go-build",
         "~/go"
@@ -69,14 +98,11 @@
     },
     "network": {
       "allowedDomains": [
-        "*.cachix.org",
-        "cache.nixos.org",
         "files.pythonhosted.org",
         "github.com",
         "proxy.golang.org",
         "pypi.org"
-      ],
-      "allowUnixSockets": ["/nix/var/nix/daemon-socket/socket"]
+      ]
     }
   },
   "hooks": {
