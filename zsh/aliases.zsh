@@ -45,4 +45,4 @@ alias nixupdate="nix flake update --flake $HOME/.dotfiles/nix-configs"
 alias nixgc="nix-collect-garbage -d"
 
 # Translate
-alias trnsl="pbpaste | trans --brief"
+alias tl="pbpaste | translate"

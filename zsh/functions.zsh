@@ -40,22 +40,6 @@ get_keychain_secret() {
 
 
 #######################################
-# Translate supplied text using Google Translate CLI (`trans`).
-# Arguments:
-#   text (required)
-#   languages (optional)
-# Outputs:
-#   Writes translation to stdout
-#######################################
-translate() {
-  # Usage: translate "text" [from:to]
-  local text=${1:?Usage: translate 'text' [from:to] (default: ja:en)}
-  local languages=${2:-ja:en}
-  trans --brief "$languages" "$text"
-}
-
-
-#######################################
 # Send a push notification using Pushover.
 # Arguments:
 #   message (required)
