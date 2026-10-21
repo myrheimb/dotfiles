@@ -22,7 +22,7 @@ ignore = [
   "D100", # Missing docstring in public module
 ]
 
-[pydocstyle]
+[lint.pydocstyle]
 convention = "google"
 
 [lint.isort]

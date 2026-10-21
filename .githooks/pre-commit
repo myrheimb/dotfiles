@@ -1,3 +1,10 @@
 #!/bin/sh
+set -e
+
 # uv2nix installs only what uv.lock lists, so a stale lock silently drops packages.
 uv lock --check --offline --quiet --directory nix-configs/python-env
+
+ruff check --quiet --config zed/ruff.toml .
+ruff format --check --quiet --config zed/ruff.toml .
+
+/Library/Developer/CommandLineTools/usr/bin/swift-format lint --strict scripts/*.swift

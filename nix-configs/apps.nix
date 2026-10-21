@@ -44,6 +44,7 @@
     pkgs.qrencode # Create QR-codes e.g. `qrencode -o conf.png -t png < wireguard.conf`
     pkgs.ripgrep # Utility that combines the usability of The Silver Searcher with the raw speed of grep
     pkgs.rsync # Transfer files over SSH
+    pkgs.ruff # An extremely fast Python linter and code formatter
     pkgs.smartmontools # Tools for monitoring the health of hard drives
     pkgs.speedtest-cli # CLI tool for testing internet bandwidth using speedtest.net
     pkgs.tree # Command to produce a depth indented directory listing
