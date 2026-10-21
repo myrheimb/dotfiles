@@ -46,7 +46,7 @@
     pkgs.rsync # Transfer files over SSH
     pkgs.ruff # An extremely fast Python linter and code formatter
     pkgs.smartmontools # Tools for monitoring the health of hard drives
-    pkgs.speedtest-cli # CLI tool for testing internet bandwidth using speedtest.net
+    pkgs.speedtest-go # CLI and Go API to Test Internet Speed using speedtest.net
     pkgs.tree # Command to produce a depth indented directory listing
     pkgs.unrar # Extract .rar archives
     pkgs.upx # The Ultimate Packer for eXecutables
@@ -92,7 +92,6 @@
     masApps = {
       "Bitwarden" = 1352778147;
       "Slack" = 803453959;
-      "Speedtest by Ookla" = 1153157709;
     };
     onActivation.autoUpdate = true; # runs brew update first
     onActivation.cleanup = "uninstall"; # remove formulae/casks not listed here
@@ -106,6 +105,8 @@
     enableBashCompletion = true;
     enableCompletion = true;
   };
+
+  services.tailscale.enable = true;
 
   # Exported to every zsh, including the non-login shells devenv spawns.
   environment.variables = {
