@@ -26,6 +26,12 @@
           run ${pkgs.git}/bin/git -C ${config.home.homeDirectory}/.dotfiles config core.hooksPath .githooks
         '';
 
+        # Nix's Swift lacks the macOS SDK with Apple's Translation framework, so Apple's compiler builds it.
+        home.activation.translate = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          run mkdir -p ${config.home.homeDirectory}/.local/bin
+          run /usr/bin/swiftc -O ${config.home.homeDirectory}/.dotfiles/scripts/translate.swift -o ${config.home.homeDirectory}/.local/bin/translate
+        '';
+
         home.file = {
           ".claude/CLAUDE.md".source = dotfile "claude/CLAUDE.md";
           ".claude/settings.json".source = dotfile "claude/settings.json";

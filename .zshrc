@@ -6,6 +6,9 @@ fi
 # Apply zsh theme
 source "$ZSH/oh-my-zsh.sh"
 
+# Tools built locally instead of through Nix
+export PATH="$HOME/.local/bin:$PATH"
+
 # Load user-specific settings, aliases, and functions
 source "$HOME/.dotfiles/zsh/aliases.zsh"
 source "$HOME/.dotfiles/zsh/functions.zsh"

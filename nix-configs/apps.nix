@@ -46,7 +46,6 @@
     pkgs.rsync # Transfer files over SSH
     pkgs.smartmontools # Tools for monitoring the health of hard drives
     pkgs.speedtest-cli # CLI tool for testing internet bandwidth using speedtest.net
-    pkgs.translate-shell # Command-line translator using Google Translate, Bing Translator, Yandex.Translate, and Apertium
     pkgs.tree # Command to produce a depth indented directory listing
     pkgs.unrar # Extract .rar archives
     pkgs.upx # The Ultimate Packer for eXecutables
