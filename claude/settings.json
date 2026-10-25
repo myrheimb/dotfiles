@@ -93,7 +93,10 @@
       "allowWrite": ["~/.cache/claude-sandbox"]
     },
     "network": {
+      "allowUnixSockets": ["/nix/var/nix/daemon-socket/socket"],
       "allowedDomains": [
+        "channels.nixos.org",
+        "codeload.github.com",
         "files.pythonhosted.org",
         "github.com",
         "proxy.golang.org",
@@ -115,7 +118,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cache_directory=\"$HOME/.cache/claude-sandbox\"; mkdir -p \"$cache_directory\"; echo \"export GOPATH=$cache_directory/go GOCACHE=$cache_directory/go-build PREK_HOME=$cache_directory/prek UV_CACHE_DIR=$cache_directory/uv\" >> \"$CLAUDE_ENV_FILE\""
+            "command": "cache_directory=\"$HOME/.cache/claude-sandbox\"; mkdir -p \"$cache_directory\"; echo \"export GOPATH=$cache_directory/go GOCACHE=$cache_directory/go-build NIX_CACHE_HOME=$cache_directory/nix PREK_HOME=$cache_directory/prek UV_CACHE_DIR=$cache_directory/uv\" >> \"$CLAUDE_ENV_FILE\""
           }
         ]
       }
