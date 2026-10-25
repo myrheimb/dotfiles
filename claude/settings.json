@@ -118,7 +118,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cache_directory=\"$HOME/.cache/claude-sandbox\"; mkdir -p \"$cache_directory\"; echo \"export GOPATH=$cache_directory/go GOCACHE=$cache_directory/go-build NIX_CACHE_HOME=$cache_directory/nix PREK_HOME=$cache_directory/prek UV_CACHE_DIR=$cache_directory/uv\" >> \"$CLAUDE_ENV_FILE\""
+            "command": "cache_directory=\"$HOME/.cache/claude-sandbox\"; mkdir -p \"$cache_directory\"; echo \"export GOPATH=$cache_directory/go GOCACHE=$cache_directory/go-build NIX_CACHE_HOME=$cache_directory/nix PREK_HOME=$cache_directory/prek UV_CACHE_DIR=$cache_directory/uv\" >> \"$CLAUDE_ENV_FILE\"; for tool_directory in \"$cache_directory\"/*; do if [ -d \"$tool_directory\" ] && [ ! -L \"$tool_directory\" ] && { [ -z \"$(find \"$tool_directory\" -type f -atime -30 -print -quit)\" ] || [ \"$(du -sk \"$tool_directory\" | cut -f1)\" -gt 2097152 ]; }; then chmod -R u+w \"$tool_directory\" && rm -rf \"$tool_directory\"; fi; done > /dev/null 2>&1 &"
           }
         ]
       }
