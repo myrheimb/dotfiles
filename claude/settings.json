@@ -90,11 +90,7 @@
     "enabled": true,
     "failIfUnavailable": true,
     "filesystem": {
-      "allowWrite": [
-        "~/.cache/uv",
-        "~/Library/Caches/go-build",
-        "~/go"
-      ]
+      "allowWrite": ["~/.cache/claude-sandbox"]
     },
     "network": {
       "allowedDomains": [
@@ -112,6 +108,14 @@
           {
             "type": "command",
             "command": "devenv_directory=\"$CLAUDE_PROJECT_DIR/.devenv\"; readlink \"$devenv_directory/profile\" | grep -q '^/nix/store/' || exit 0; echo \"export PATH=\\\"$devenv_directory/state/go/bin:$devenv_directory/state/venv/bin:$devenv_directory/profile/bin:\\$PATH\\\"\" >> \"$CLAUDE_ENV_FILE\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cache_directory=\"$HOME/.cache/claude-sandbox\"; mkdir -p \"$cache_directory\"; echo \"export GOPATH=$cache_directory/go GOCACHE=$cache_directory/go-build PREK_HOME=$cache_directory/prek UV_CACHE_DIR=$cache_directory/uv\" >> \"$CLAUDE_ENV_FILE\""
           }
         ]
       }

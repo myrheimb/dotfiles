@@ -51,6 +51,8 @@ The rebuild links `.zshrc`, `.hushlogin`, the Claude Code configs and Zed's keym
 
 Claude Code's sandbox lock lives in `nix-configs/darwin.nix`, not in `claude/settings.json`. The rebuild installs it as a root-owned `/Library/Application Support/ClaudeCode/managed-settings.json`, so Claude can't loosen it. Nix commands can't reach the Nix daemon from inside the sandbox, so the lock lets `nix`, `nix-instantiate` and `nix-shell` run outside it when called by their full `/run/current-system/sw/bin/` path. Each of those calls goes through Claude's normal permission check.
 
+Inside the sandbox, Go, prek and uv keep their caches in `~/.cache/claude-sandbox`, set by a SessionStart hook in `claude/settings.json`. That is the only cache the sandbox can write. Tools you run yourself keep their usual caches, so nothing Claude plants there runs outside the sandbox.
+
 Zed's `settings.json` is a baseline instead of a link. Each rebuild merges `zed/settings.json` into Zed's own settings file: baseline keys win, and anything you add in Zed stays on that machine. To share a tweak across machines, copy it into `zed/settings.json`.
 
 For subsequent rebuilds, simply use the alias.
