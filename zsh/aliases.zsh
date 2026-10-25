@@ -46,3 +46,6 @@ alias nixgc="nix-collect-garbage -d"
 
 # Translate
 alias tl="pbpaste | translate"
+
+# Apple's on-device AI model
+alias ai="fm respond"
