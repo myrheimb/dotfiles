@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 
 {
   # Nix options for derivations to persist garbage collection
@@ -36,6 +36,9 @@
     # The values auto and 0 will use all available cores
     max-jobs = "auto";
     cores = 0;
+    # Claude's sandbox can reach the daemon. Builds must not read our files, and a trusted user could turn that off.
+    sandbox = true;
+    trusted-users = lib.mkForce [ "root" ];
     download-buffer-size = 536870912; # 512 MB
     substituters = [
       "https://cache.nixos.org"

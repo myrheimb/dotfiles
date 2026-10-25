@@ -49,7 +49,9 @@ sudo nix run nix-darwin --extra-experimental-features nix-command --extra-experi
 
 The rebuild links `.zshrc`, `.hushlogin`, the Claude Code configs and Zed's keymap and `ruff.toml` from this repo into your home folder, see `nix-configs/home.nix`. Any file already in the way is renamed with a `.before-home-manager` suffix.
 
-Claude Code's sandbox lock lives in `nix-configs/darwin.nix`, not in `claude/settings.json`. The rebuild installs it as a root-owned `/Library/Application Support/ClaudeCode/managed-settings.json`, so Claude can't loosen it. Nix commands can't reach the Nix daemon from inside the sandbox, so the lock lets `nix`, `nix-instantiate` and `nix-shell` run outside it when called by their full `/run/current-system/sw/bin/` path. Each of those calls goes through Claude's normal permission check.
+Claude Code's sandbox lock lives in `nix-configs/darwin.nix`, not in `claude/settings.json`. The rebuild installs it as a root-owned `/Library/Application Support/ClaudeCode/managed-settings.json`, so Claude can't loosen it. Nix commands run inside the sandbox too. `claude/settings.json` lets them reach the Nix daemon's socket, and only root is a trusted Nix user, so the sandbox can't change the daemon's settings. The daemon runs builds outside Claude's sandbox, as Nix's build users, which can't enter your home folder. Downloads, builds that declare their output's hash up front, can reach any host, so through Nix anything in the sandbox can send data past the allowed domains.
+
+Inside the sandbox, Go, Nix, prek and uv keep their caches in `~/.cache/claude-sandbox`, set by a SessionStart hook in `claude/settings.json`. That is the only cache the sandbox can write. Tools you run yourself keep their usual caches, so nothing Claude plants there runs outside the sandbox. The same hook deletes a tool's cache once it passes 2 GB or nothing new lands in it for 30 days.
 
 Zed's `settings.json` is a baseline instead of a link. Each rebuild merges `zed/settings.json` into Zed's own settings file: baseline keys win, and anything you add in Zed stays on that machine. To share a tweak across machines, copy it into `zed/settings.json`.
 

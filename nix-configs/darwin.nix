@@ -17,12 +17,6 @@ let
       sandbox = {
         allowUnsandboxedCommands = false;
         enabled = true;
-        # Nix needs its daemon, which sandboxed commands can't reach. Full paths keep a repo's own `nix` on PATH from matching.
-        excludedCommands = [
-          "/run/current-system/sw/bin/nix *"
-          "/run/current-system/sw/bin/nix-instantiate *"
-          "/run/current-system/sw/bin/nix-shell *"
-        ];
         failIfUnavailable = true;
       };
     }

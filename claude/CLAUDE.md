@@ -44,9 +44,8 @@ Lazy means efficient, not careless. Deletion over addition, boring over clever, 
 
 ## Tools
 - Before deleting a file, say whether git can restore it. If it can't, ask what to do.
-- If a CLI tool is missing, run it with `/run/current-system/sw/bin/nix-shell -p <package> --run '<command>'`. Don't install it.
-- For one-off Python packages, use `/run/current-system/sw/bin/nix-shell -p python314Packages.<package> --run '<command>'`. Don't use pip or uv.
-- Run Nix commands as a call of their own, without `cd`, redirects or `$(...)`. Otherwise they stay sandboxed and can't reach the Nix daemon.
+- If a CLI tool is missing, run it with `nix-shell -p <package> --run '<command>'`. Don't install it.
+- For one-off Python packages, use `nix-shell -p python314Packages.<package> --run '<command>'`. Don't use pip or uv.
 
 ## Code Style
 
@@ -85,6 +84,8 @@ Never hard-wrap prose in Markdown files. Write each paragraph as a single line a
 NEVER push directly to `main`. Always work on a feature branch and leave the pushing to the user. This rule has NO exceptions — not even for "quick fixes" or single commits. If you have clear instructions, make a branch based on the naming convention below. If not, ask.
 
 If `git config commit.gpgsign` is true, commits must be signed, and the sandbox can't reach the GPG keyring. Never disable signing or use `--no-gpg-sign`. Prepare the commits instead (staged changes, or a script that creates them) and hand them over for me to run.
+
+The sandbox blocks writes to Claude's own config files, such as `.claude/` in any repo and `~/.dotfiles/claude/`. `git rebase`, `checkout` and `switch` fail partway when they would change those files. Amend the last commit instead, or hand the command over for me to run.
 
 ### Branch naming convention
 
