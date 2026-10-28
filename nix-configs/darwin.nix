@@ -46,6 +46,11 @@ in
   # Keep Terminal.app from copying each tab's shell history into ~/.bash_sessions and ~/.zsh_sessions.
   environment.variables.SHELL_SESSIONS_DISABLE = "1";
 
+  # Send lookups for the tailnet's .vpn hosts to Tailscale's DNS server.
+  environment.etc."resolver/vpn".text = ''
+    nameserver 100.100.100.100
+  '';
+
   # Root owns this file, so nothing Claude runs can loosen the sandbox, and as managed settings it stops repo settings from widening it.
   system.activationScripts.postActivation.text = ''
     install -d -o root -g wheel -m 0755 "/Library/Application Support/ClaudeCode"
