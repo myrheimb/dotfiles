@@ -74,3 +74,33 @@ notify() {
   local -r title="${2:-Notification}"
   osascript -e "display notification \"${message}\" with title \"${title}\""
 }
+
+
+#######################################
+# List the 30 apps using the most memory, summing each app's processes.
+# Outputs:
+#   Writes "<MB>  <app>" lines to stdout, largest first.
+#######################################
+appmem() {
+  top -l 1 -stats pid,mem | awk '
+    NR == FNR {
+      pid = $1
+      $1 = ""
+      sub(/^ /, "")
+      path[pid] = $0
+      next
+    }
+    /^PID/ { in_table = 1; next }
+    in_table {
+      unit = $2
+      gsub(/[0-9.+-]/, "", unit)
+      amount = $2 + 0
+      megabytes = (unit == "G") ? amount * 1024 : (unit == "K") ? amount / 1024 : (unit == "B") ? amount / 1048576 : amount
+      process_path = path[$1]
+      if (match(process_path, /[^\/]+\.app\//)) name = substr(process_path, RSTART, RLENGTH - 5)
+      else { part_count = split(process_path, parts, "/"); name = parts[part_count] }
+      total[name] += megabytes
+    }
+    END { for (name in total) printf "%8.1f MB  %s\n", total[name], name }
+  ' <(ps -axo pid=,comm=) - | sort -rn | head -30
+}
