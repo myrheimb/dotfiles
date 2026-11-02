@@ -5,6 +5,7 @@
     { app = "/Applications/Zen.app"; }
     { app = "/Applications/Zed.app"; }
     { app = "/System/Applications/Reminders.app"; }
+    { app = "/Users/${config.user.name}/Applications/Docket.app"; }
     { app = "/Applications/Notion.app"; }
     { app = "/Applications/Slack.app"; }
     { app = "/Applications/Microsoft Teams.app"; }
@@ -15,6 +16,7 @@
   ];
 
   environment.systemPackages = [
+    pkgs.azure-cli # Next generation multi-platform command line experience for Azure
     pkgs.gnupg # GNU Privacy Guard
     pkgs.trivy # Simple and comprehensive vulnerability scanner for containers
   ];

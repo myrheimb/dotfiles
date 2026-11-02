@@ -22,10 +22,12 @@
     pkgs.fasttext # Library for text classification and representation learning
     pkgs.fdupes # Identifies duplicate files residing within specified directories
     pkgs.geckodriver # Headless browser
+    pkgs.gh # GitHub CLI tool
     pkgs.git # Distributed version control system
     pkgs.go-task # Task runner / simpler Make alternative written in Go
     pkgs.grc # Generic text colouriser
     pkgs.htop # An interactive process viewer
+    unstablePkgs.hugo # Fast and modern static website engine
     pkgs.languagetool # A proofreading program, similar to Grammarly
     pkgs.localsend # Open source cross-platform alternative to AirDrop
     unstablePkgs.mactop # Terminal-based monitoring tool for Apple Silicon chips
