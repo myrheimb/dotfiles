@@ -119,5 +119,16 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "foreman@foreman": true
+  },
+  "extraKnownMarketplaces": {
+    "foreman": {
+      "source": {
+        "source": "directory",
+        "path": "~/Development/foreman"
+      }
+    }
   }
 }
