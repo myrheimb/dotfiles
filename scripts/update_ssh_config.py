@@ -68,7 +68,10 @@ def unlock_vault() -> None:
     if status == "locked" and is_login_expired(state["lastSync"]):
         run_bw("logout")
         command = "login"
-        message = "Your Bitwarden login has likely expired. Log in again to fetch your SSH hosts."
+        message = (
+            "Your Bitwarden login has likely expired. "
+            "Log in again to fetch your SSH hosts."
+        )
     elif status == "unauthenticated":
         command = "login"
         message = "Log in to Bitwarden to fetch your SSH hosts."

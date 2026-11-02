@@ -34,6 +34,7 @@
 
         home.file = {
           ".claude/CLAUDE.md".source = dotfile "claude/CLAUDE.md";
+          ".claude/hooks/devenv-exports.sh".source = dotfile "claude/hooks/devenv-exports.sh";
           ".claude/settings.json".source = dotfile "claude/settings.json";
           ".hushlogin".source = dotfile ".hushlogin";
           ".zshrc".source = dotfile ".zshrc";

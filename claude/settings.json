@@ -88,6 +88,7 @@
   "sandbox": {
     "allowUnsandboxedCommands": false,
     "enabled": true,
+    "enableWeakerNetworkIsolation": true,
     "failIfUnavailable": true,
     "filesystem": {
       "allowWrite": ["~/.cache/claude-sandbox"]
@@ -95,13 +96,16 @@
     "network": {
       "allowUnixSockets": ["/nix/var/nix/daemon-socket/socket"],
       "allowedDomains": [
+        "api.github.com",
         "channels.nixos.org",
         "codeload.github.com",
         "files.pythonhosted.org",
         "github.com",
         "proxy.golang.org",
-        "pypi.org"
-      ]
+        "pypi.org",
+        "sum.golang.org"
+      ],
+      "allowLocalBinding": true
     }
   },
   "hooks": {
@@ -110,15 +114,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "devenv_directory=\"$CLAUDE_PROJECT_DIR/.devenv\"; readlink \"$devenv_directory/profile\" | grep -q '^/nix/store/' || exit 0; echo \"export PATH=\\\"$devenv_directory/state/go/bin:$devenv_directory/state/venv/bin:$devenv_directory/profile/bin:\\$PATH\\\"\" >> \"$CLAUDE_ENV_FILE\""
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cache_directory=\"$HOME/.cache/claude-sandbox\"; mkdir -p \"$cache_directory\"; echo \"export GOPATH=$cache_directory/go GOCACHE=$cache_directory/go-build NIX_CACHE_HOME=$cache_directory/nix PREK_HOME=$cache_directory/prek UV_CACHE_DIR=$cache_directory/uv\" >> \"$CLAUDE_ENV_FILE\"; for tool_directory in \"$cache_directory\"/*; do if [ -d \"$tool_directory\" ] && [ ! -L \"$tool_directory\" ] && { [ -z \"$(find \"$tool_directory\" -type f -atime -30 -print -quit)\" ] || [ \"$(du -sk \"$tool_directory\" | cut -f1)\" -gt 2097152 ]; }; then chmod -R u+w \"$tool_directory\" && rm -rf \"$tool_directory\"; fi; done > /dev/null 2>&1 &"
+            "command": "cache_directory=\"$HOME/.cache/claude-sandbox\"; mkdir -p \"$cache_directory\"; echo \"export GOPATH=$cache_directory/go GOCACHE=$cache_directory/go-build NIX_CACHE_HOME=$cache_directory/nix PREK_HOME=$cache_directory/prek STATICCHECK_CACHE=$cache_directory/staticcheck UV_CACHE_DIR=$cache_directory/uv\" >> \"$CLAUDE_ENV_FILE\"; for tool_directory in \"$cache_directory\"/*; do if [ -d \"$tool_directory\" ] && [ ! -L \"$tool_directory\" ] && { [ -z \"$(find \"$tool_directory\" -type f -atime -30 -print -quit)\" ] || [ \"$(du -sk \"$tool_directory\" | cut -f1)\" -gt 2097152 ]; }; then chmod -R u+w \"$tool_directory\" && rm -rf \"$tool_directory\"; fi; done > /dev/null 2>&1 & devenv_directory=\"$CLAUDE_PROJECT_DIR/.devenv\"; readlink \"$devenv_directory/profile\" | grep -q '^/nix/store/' || exit 0; echo \"export PATH=\\\"$devenv_directory/state/go/bin:$devenv_directory/state/venv/bin:$devenv_directory/profile/bin:\\$PATH\\\"\" >> \"$CLAUDE_ENV_FILE\"; echo \"eval \\\"\\$(bash \\\"$HOME/.claude/hooks/devenv-exports.sh\\\" \\\"$CLAUDE_PROJECT_DIR\\\")\\\"\" >> \"$CLAUDE_ENV_FILE\""
           }
         ]
       }
