@@ -14,6 +14,12 @@ let
   #   uv lock --upgrade --directory nix-configs/python-env
   workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./python-env; };
 
+  lockedPackageNames = map (package: package.name) (
+    lib.filter (package: package.source ? registry) (
+      (builtins.fromTOML (builtins.readFile ./python-env/uv.lock)).package
+    )
+  );
+
   pythonSet =
     (pkgs.callPackage pyproject-nix.build.packages {
       inherit python;
@@ -21,6 +27,8 @@ let
       (lib.composeManyExtensions [
         pyproject-build-systems.overlays.wheel
         (workspace.mkPyprojectOverlay { sourcePreference = "wheel"; })
+        # uv2nix adds a sandbox profile to every Darwin package, and Nix only accepts that with sandbox = relaxed.
+        (_final: prev: lib.genAttrs lockedPackageNames (name: prev.${name}.overrideAttrs { sandboxProfile = ""; }))
       ]);
 
   pythonEnv = pythonSet.mkVirtualEnv "system-python-env" workspace.deps.default;
