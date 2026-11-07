@@ -16,6 +16,3 @@ source "$HOME/.dotfiles/user-specific/$USER/profile.zsh"
 
 # Prevent “too many open files”
 ulimit -n 2048
-
-# Enable devenv hook
-eval "$(devenv hook zsh)"

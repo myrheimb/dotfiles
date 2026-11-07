@@ -66,6 +66,12 @@
     pkgs.appcleaner # Uninstall unwanted apps
   ];
 
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true;
+    settings.global.hide_env_diff = true;
+  };
+
   homebrew = {
     enable = true;
     user = config.user.name;

@@ -1,7 +1,12 @@
 #!/bin/bash
 project_directory="$1"
 devenv_directory="$project_directory/.devenv"
-[ -f "$devenv_directory/shell-env.sh" ] || exit 0
+
+# direnv rebuilds .devenv/profile, but only an interactive `devenv shell` writes shell-env.sh, so it can lag behind or be missing.
+if ! grep -qF "$(readlink "$devenv_directory/profile")" "$devenv_directory/shell-env.sh" 2>/dev/null; then
+  echo "devenv-exports: $devenv_directory/shell-env.sh is missing or stale. Run 'devenv shell' in $project_directory, then exit." >&2
+  exit 0
+fi
 
 # zsh can't source devenv's shell-env.sh and macOS's bash 3.2 can't parse it, so replay its exports with devenv's bash.
 env -i HOME="$HOME" USER="$USER" PATH=__session_path__ "$devenv_directory/profile/bin/bash" -c '
