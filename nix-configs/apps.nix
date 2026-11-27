@@ -60,7 +60,6 @@
     pkgs.zstd # Manage zstd archives. E.g. 'zstd --decompress archive.zst'
     unstablePkgs.zuban # Mypy-compatible Python Language Server built in Rust
     # GUI apps
-    unstablePkgs.claude-code # Agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
     pkgs.maccy # Simple clipboard manager for macOS
     pkgs.keka # macOS file archiver
     pkgs.appcleaner # Uninstall unwanted apps

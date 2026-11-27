@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, unstablePkgs, ... }:
 
 {
   users.users.${config.user.name}.home = "/Users/${config.user.name}";
@@ -40,6 +40,25 @@
           ".zshrc".source = dotfile ".zshrc";
         };
 
+        # Home Manager hands MCP servers to Claude Code as a plugin, so they live here, not in ~/.claude.json.
+        programs.claude-code = {
+          enable = true;
+          package = unstablePkgs.claude-code;
+          # Headless with an in-memory profile, so pages see none of my logins.
+          mcpServers.playwright = {
+            type = "stdio";
+            command = lib.getExe pkgs.playwright-mcp;
+            args = [
+              "--browser"
+              "chromium"
+              "--executable-path"
+              "/Applications/Chromium.app/Contents/MacOS/Chromium"
+              "--headless"
+              "--isolated"
+            ];
+          };
+        };
+
         xdg.configFile = {
           "zed/keymap.json".source = dotfile "zed/keymap.json";
           "zed/ruff.toml".source = dotfile "zed/ruff.toml";
@@ -49,7 +68,10 @@
         programs.zed-editor = {
           enable = true;
           package = null; # Installed as a Homebrew cask
-          userSettings = builtins.fromJSON (builtins.readFile ../zed/settings.json);
+          # Zed's bundled Claude lacks the Home Manager plugin, and Zed doesn't expand ~ in this path.
+          userSettings = lib.recursiveUpdate (builtins.fromJSON (builtins.readFile ../zed/settings.json)) {
+            agent_servers.claude-acp.env.CLAUDE_CODE_EXECUTABLE = "${config.home.profileDirectory}/bin/claude";
+          };
         };
       };
   };

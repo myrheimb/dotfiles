@@ -46,6 +46,7 @@ Lazy means efficient, not careless. Deletion over addition, boring over clever, 
 - Before deleting a file, say whether git can restore it. If it can't, ask what to do.
 - If a CLI tool is missing, run it with `nix-shell -p <package> --run '<command>'`. Don't install it.
 - For one-off Python packages, use `nix-shell -p python314Packages.<package> --run '<command>'`. Don't use pip or uv.
+- To check a web page, use the Playwright MCP tools.
 
 ## Code Style
 
