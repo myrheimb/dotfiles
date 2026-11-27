@@ -24,12 +24,17 @@ let
     (pkgs.callPackage pyproject-nix.build.packages {
       inherit python;
     }).overrideScope
-      (lib.composeManyExtensions [
-        pyproject-build-systems.overlays.wheel
-        (workspace.mkPyprojectOverlay { sourcePreference = "wheel"; })
-        # uv2nix adds a sandbox profile to every Darwin package, and Nix only accepts that with sandbox = relaxed.
-        (_final: prev: lib.genAttrs lockedPackageNames (name: prev.${name}.overrideAttrs { sandboxProfile = ""; }))
-      ]);
+      (
+        lib.composeManyExtensions [
+          pyproject-build-systems.overlays.wheel
+          (workspace.mkPyprojectOverlay { sourcePreference = "wheel"; })
+          # uv2nix adds a sandbox profile to every Darwin package, and Nix only accepts that with sandbox = relaxed.
+          (
+            _final: prev:
+            lib.genAttrs lockedPackageNames (name: prev.${name}.overrideAttrs { sandboxProfile = ""; })
+          )
+        ]
+      );
 
   pythonEnv = pythonSet.mkVirtualEnv "system-python-env" workspace.deps.default;
 in

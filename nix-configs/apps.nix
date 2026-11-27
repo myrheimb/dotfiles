@@ -14,6 +14,7 @@
     pkgs.cachix # CLI client for Nix binary cache hosting https://cachix.org
     pkgs.comma # Runs programs without installing them
     pkgs.coreutils # The basic file, shell and text manipulation utilities of the GNU operating system
+    pkgs.deadnix # Find and remove unused code in .nix source files
     unstablePkgs.devenv # Fast, Declarative, Reproducible, and Composable Developer Environments
     pkgs.dig # DNS lookup utility
     pkgs.docker-compose # Docker CLI plugin to define and run multi-container applications with Docker
@@ -38,6 +39,7 @@
     unstablePkgs.netwatch # Real-time network diagnostics in your terminal.
     pkgs.nil # Yet another language server for Nix
     pkgs.nixd # Feature-rich Nix language server interoperating with C++ nix
+    pkgs.nixfmt # Official formatter for Nix code
     pkgs.nmap # A utility for network discovery and security auditing
     pkgs.parallel # Shell tool for executing jobs in parallel
     pkgs.pgweb # A web-based database browser for PostgreSQL
@@ -102,7 +104,7 @@
     };
     onActivation.autoUpdate = true; # runs brew update first
     onActivation.cleanup = "uninstall"; # remove formulae/casks not listed here
-    onActivation.upgrade = true;   # upgrades formulae/casks on rebuild
+    onActivation.upgrade = true; # upgrades formulae/casks on rebuild
   };
 
   programs.zsh = {

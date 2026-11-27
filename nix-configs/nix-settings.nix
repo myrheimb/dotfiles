@@ -1,4 +1,9 @@
-{ pkgs, config, lib, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 
 {
   # Nix options for derivations to persist garbage collection
@@ -8,7 +13,6 @@
     keep-derivations = true
     extra-platforms = x86_64-darwin aarch64-darwin
   '';
-
 
   nix.enable = true;
   nix.package = pkgs.nix;

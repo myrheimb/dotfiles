@@ -66,6 +66,8 @@ For subsequent rebuilds, simply use the alias.
 nixrb
 ```
 
+The pre-commit hook in `.githooks/` checks Python with ruff, Swift with swift-format, and Nix with nixfmt and deadnix. Run `nixfmt $(git ls-files '*.nix')` to fix Nix formatting.
+
 ## Managing the global Python
 
 Dependencies for the system-wide `python3` live in `nix-configs/python-env/pyproject.toml`,

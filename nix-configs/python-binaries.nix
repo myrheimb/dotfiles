@@ -31,9 +31,13 @@ let
   pythonBins = [
     (mkPythonBin "securepass" [ ] [ ] ../scripts/securepass.py)
     (mkPythonBin "tsv-to-json" [ ] [ ] ../scripts/tsv_to_json.py)
-    (mkPythonBin "update-ssh-config" [ ] [
-      unstablePkgs.bitwarden-cli
-    ] ../scripts/update_ssh_config.py)
+    (mkPythonBin "update-ssh-config"
+      [ ]
+      [
+        unstablePkgs.bitwarden-cli
+      ]
+      ../scripts/update_ssh_config.py
+    )
   ];
 
 in

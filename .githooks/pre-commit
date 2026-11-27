@@ -7,4 +7,8 @@ uv lock --check --offline --quiet --directory nix-configs/python-env
 ruff check --quiet --config zed/ruff.toml .
 ruff format --check --quiet --config zed/ruff.toml .
 
+nixfmt --check $(git ls-files '*.nix')
+# Flake outputs and modules receive arguments they don't use, so only flag unused bindings.
+deadnix --fail --no-lambda-pattern-names .
+
 /Library/Developer/CommandLineTools/usr/bin/swift-format lint --strict scripts/*.swift
