@@ -51,6 +51,8 @@ The rebuild links `.zshrc`, `.hushlogin`, the Claude Code configs and Zed's keym
 
 Home Manager also installs Claude Code itself, together with a Playwright MCP server so Claude can check web pages. It drives the Homebrew `ungoogled-chromium` cask headless, with an in-memory profile that sees none of your logins.
 
+direnv loads a project's environment when you `cd` into it. For devenv projects, add an `.envrc` containing `use devenv`.
+
 Claude Code's sandbox lock lives in `nix-configs/darwin.nix`, not in `claude/settings.json`. The rebuild installs it as a root-owned `/Library/Application Support/ClaudeCode/managed-settings.json`, so Claude can't loosen it. Nix commands run inside the sandbox too. `claude/settings.json` lets them reach the Nix daemon's socket, and only root is a trusted Nix user, so the sandbox can't change the daemon's settings. The daemon runs builds outside Claude's sandbox, as Nix's build users, which can't enter your home folder. Downloads, builds that declare their output's hash up front, can reach any host, so through Nix anything in the sandbox can send data past the allowed domains.
 
 In devenv projects, Claude's commands get the devenv shell's environment. `claude/hooks/devenv-exports.sh` replays the environment the last interactive `devenv shell` saved. direnv doesn't save it, so after changing `devenv.nix` or bumping a package, run `devenv shell` once and exit. Until then, the hook prints a warning on every command. It runs inside the sandbox before each command, not in the session hook, because any sandboxed command can rewrite the file it reads.
